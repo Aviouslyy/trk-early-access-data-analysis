@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Star Trek Early Access</title>
+<meta name="description" content="Early-access snapshot of Magic: The Gathering | Star Trek (TRK) limited results on MTG Arena, using data from 17Lands.">
+<meta name="robots" content="noindex">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f3ef;
+  --surface-1: #fcfcfb;
+  --border: #e2e0da;
+  --grid: #ecebe6;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #77756f;
+  --series-1: #2a78d6;
+  --series-1-soft: #a9c8ef;
+  --track: #e9eef6;
+  --accent-ink: #1d5fae;
+  --tip-bg: #0b0b0b;
+  --tip-fg: #f6f5f1;
+  --pip-W: #f3ead0; --pip-W-ink: #5b4d1f;
+  --pip-U: #2a78d6; --pip-U-ink: #fff;
+  --pip-B: #2d2b29; --pip-B-ink: #fff;
+  --pip-R: #d6403f; --pip-R-ink: #fff;
+  --pip-G: #1f8a3a; --pip-G-ink: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211;
+    --surface-1: #1a1a19;
+    --border: #2e2d2b;
+    --grid: #262624;
+    --text-primary: #f0efec;
+    --text-secondary: #c3c2b7;
+    --text-muted: #9a998f;
+    --series-1: #3987e5;
+    --series-1-soft: #2a4a72;
+    --track: #232a33;
+    --accent-ink: #8db8f0;
+    --tip-bg: #f0efec;
+    --tip-fg: #121211;
+    --pip-B: #4a4744;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211;
+  --surface-1: #1a1a19;
+  --border: #2e2d2b;
+  --grid: #262624;
+  --text-primary: #f0efec;
+  --text-secondary: #c3c2b7;
+  --text-muted: #9a998f;
+  --series-1: #3987e5;
+  --series-1-soft: #2a4a72;
+  --track: #232a33;
+  --accent-ink: #8db8f0;
+  --tip-bg: #f0efec;
+  --tip-fg: #121211;
+  --pip-B: #4a4744;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text-primary);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--accent-ink); }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 24px 16px 64px; }
+header h1 { font-size: 28px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
+header .sub { color: var(--text-secondary); margin: 0 0 16px; }
+.source {
+  background: var(--surface-1); border: 1px solid var(--border); border-left: 4px solid var(--series-1);
+  border-radius: 8px; padding: 12px 14px; margin-bottom: 20px; color: var(--text-secondary);
+}
+.source strong { color: var(--text-primary); }
+.controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 8px 0 20px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface-1); }
+.seg button {
+  font: inherit; border: 0; background: transparent; color: var(--text-secondary);
+  padding: 7px 14px; cursor: pointer; min-height: 36px;
+}
+.seg button[aria-pressed="true"] { background: var(--series-1); color: #fff; }
+.seg button:focus-visible { outline: 2px solid var(--series-1); outline-offset: -2px; }
+.meta { color: var(--text-muted); font-size: 13px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+.tile .label { color: var(--text-secondary); font-size: 13px; }
+.tile .value { font-size: 26px; font-weight: 600; line-height: 1.2; margin-top: 4px; }
+.tile .note { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 16px; }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 16px; min-width: 0; }
+.card h2 { font-size: 16px; margin: 0 0 2px; }
+.card .desc { color: var(--text-secondary); font-size: 13px; margin: 0 0 14px; }
+.card.full { grid-column: 1 / -1; }
+.bars { display: flex; flex-direction: column; gap: 6px; }
+.bar-row { display: grid; grid-template-columns: minmax(96px, 150px) 1fr 44px; align-items: center; gap: 10px; padding: 2px 0; border-radius: 6px; }
+.bar-row:hover { background: var(--grid); }
+.bar-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { position: relative; height: 18px; display: flex; gap: 2px; }
+.bar-fill { height: 100%; border-radius: 0 4px 4px 0; background: var(--series-1); min-width: 0; }
+.bar-fill.soft { background: var(--series-1-soft); }
+.bar-fill.first-of-two { border-radius: 0; }
+.bar-val { font-size: 13px; color: var(--text-secondary); text-align: right; font-variant-numeric: tabular-nums; }
+.legend { display: flex; gap: 14px; font-size: 12px; color: var(--text-secondary); margin: -6px 0 10px; flex-wrap: wrap; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; background: var(--c); }
+.pips { display: inline-flex; gap: 2px; flex: none; }
+.pip {
+  display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%;
+  font-size: 10px; font-weight: 700; line-height: 1; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
+}
+.pip.lc { width: 14px; height: 14px; font-size: 8px; opacity: .8; }
+.pip-W { background: var(--pip-W); color: var(--pip-W-ink); }
+.pip-U { background: var(--pip-U); color: var(--pip-U-ink); }
+.pip-B { background: var(--pip-B); color: var(--pip-B-ink); }
+.pip-R { background: var(--pip-R); color: var(--pip-R-ink); }
+.pip-G { background: var(--pip-G); color: var(--pip-G-ink); }
+.vbars { display: flex; align-items: flex-end; gap: 6px; height: 160px; border-bottom: 1px solid var(--border); padding-top: 8px; }
+.vcol { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 4px; cursor: default; border-radius: 4px; }
+.vcol:hover { background: var(--grid); }
+.vcol .v { font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.vcol .b { width: 70%; max-width: 44px; background: var(--series-1); border-radius: 4px 4px 0 0; }
+.vlabels { display: flex; gap: 6px; margin-top: 6px; }
+.vlabels span { flex: 1; text-align: center; font-size: 12px; color: var(--text-secondary); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--grid); }
+th { color: var(--text-secondary); font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.table-scroll { overflow-x: auto; }
+.notes { color: var(--text-secondary); font-size: 14px; }
+.notes li { margin-bottom: 6px; }
+.empty { color: var(--text-muted); font-size: 13px; padding: 12px 0; }
+#tip {
+  position: fixed; pointer-events: none; z-index: 10; background: var(--tip-bg); color: var(--tip-fg);
+  font-size: 12px; padding: 6px 8px; border-radius: 6px; max-width: 240px; opacity: 0; transition: opacity .08s;
+}
+footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Star Trek early access: what's winning</h1>
+    <p class="sub">A snapshot of MTG Arena trophy decks and leaderboard results from the <em>Magic: The Gathering | Star Trek</em> (TRK) early access event.</p>
+    <div class="source">
+      <strong>Data source: <a href="https://www.17lands.com" target="_blank" rel="noopener">17Lands</a>.</strong>
+      Trophy decks from <a href="https://www.17lands.com/trophy_decks" target="_blank" rel="noopener">17lands.com/trophy_decks</a> and leaderboard totals from <a href="https://www.17lands.com/leaderboard" target="_blank" rel="noopener">17lands.com/leaderboard</a>.
+      This is an independent summary for a small testing group, not endorsed by 17Lands. Player names are left out. Go to 17Lands for live and complete numbers.
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Format">
+      <button type="button" data-fmt="PremierDraft" aria-pressed="true">Premier Draft</button>
+      <button type="button" data-fmt="Sealed" aria-pressed="false">Sealed</button>
+    </div>
+    <span class="meta" id="meta"></span>
+  </div>
+
+  <section class="tiles" id="tiles" aria-label="Headline numbers"></section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Trophy decks by colour pair</h2>
+      <p class="desc">Two-colour trophy decks by their main colours. Splashes are ignored.</p>
+      <div class="bars" id="pairs"></div>
+    </section>
+
+    <section class="card">
+      <h2>Colour presence in trophy decks</h2>
+      <p class="desc">How many trophy decks play each colour, as a main colour or only as a splash.</p>
+      <div class="legend"><span style="--c:var(--series-1)">Main colour</span><span style="--c:var(--series-1-soft)">Splash only</span></div>
+      <div class="bars" id="presence"></div>
+    </section>
+
+    <section class="card">
+      <h2>Deck shape</h2>
+      <p class="desc">How many main colours trophy decks play, and which colours they splash.</p>
+      <div class="bars" id="width"></div>
+      <h3 style="font-size:13px;margin:16px 0 8px;color:var(--text-secondary);font-weight:600" id="splash-h"></h3>
+      <div class="bars" id="splash"></div>
+    </section>
+
+    <section class="card">
+      <h2>Trophy records</h2>
+      <p class="desc">A trophy means 7 wins. The columns show how many losses those runs had along the way.</p>
+      <div class="vbars" id="records"></div>
+      <div class="vlabels" id="records-l"></div>
+    </section>
+
+    <section class="card" id="rank-card">
+      <h2>Starting rank of trophy decks</h2>
+      <p class="desc">The player's ladder tier when the run started. Premier Draft only, since Sealed has no rank.</p>
+      <div class="bars" id="ranks"></div>
+    </section>
+
+    <section class="card">
+      <h2>Leaderboard win rates</h2>
+      <p class="desc">Win-rate spread among the players 17Lands lists on its leaderboard. These are its most active or most successful players, not everyone.</p>
+      <div class="vbars" id="wr"></div>
+      <div class="vlabels" id="wr-l"></div>
+    </section>
+
+    <section class="card full">
+      <h2>Every trophy archetype</h2>
+      <p class="desc">Each main-colour combination that has won a trophy, including mono-colour and three-colour decks.</p>
+      <div class="table-scroll"><table id="arch"><thead><tr><th>Colours</th><th class="num">Trophy decks</th><th class="num">Share</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section class="card full">
+      <h2>How to read this</h2>
+      <ul class="notes">
+        <li><strong>Small sample.</strong> This covers the first day or so of early access. One or two decks can change a colour pair's ranking, so treat it as directional.</li>
+        <li><strong>Trophies are not win rates.</strong> A colour pair can top the trophy count just because more people drafted it. Colour-pair and card win rates aren't published for this set yet. For those, use the <a href="https://www.17lands.com/color_ratings" target="_blank" rel="noopener">colour ratings</a> and <a href="https://www.17lands.com/card_data" target="_blank" rel="noopener">card data</a> pages on 17Lands once they fill in.</li>
+        <li><strong>Who's in the data.</strong> Only 17Lands users running its tracker appear here. They tend to be more experienced than the average Arena player.</li>
+        <li><strong>Colour notation.</strong> Upper-case letters are main colours and small pips are splashes, as 17Lands writes them. For example, "WBg" is white-black splashing green.</li>
+        <li><strong>Leaderboard.</strong> It lists a limited set of players ranked by wins and trophies, so its trophy total can be lower than the trophy-deck count. The highest win rates come from players with very few games.</li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    Data from <a href="https://www.17lands.com" target="_blank" rel="noopener">17Lands</a>, collected once in a single snapshot (time shown above). Magic: The Gathering is a trademark of Wizards of the Coast. Star Trek is a trademark of CBS Studios. This page isn't affiliated with either company.
+  </footer>
+</div>
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  const COLOR_NAMES = { W: "White", U: "Blue", B: "Black", R: "Red", G: "Green" };
+  const FMT_LABEL = { PremierDraft: "Premier Draft", Sealed: "Sealed" };
+  const $ = (id) => document.getElementById(id);
+  const tip = $("tip");
+  let stats = null;
+  let fmt = "PremierDraft";
+  try { const saved = localStorage.getItem("trk-fmt"); if (saved) fmt = saved; } catch (e) {}
+
+  const pct = (n, d) => d ? Math.round((n / d) * 100) + "%" : "–";
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  function pips(code) {
+    return '<span class="pips" aria-hidden="true">' + [...code].map((c) => {
+      const up = c.toUpperCase();
+      return '<span class="pip pip-' + up + (c !== up ? " lc" : "") + '">' + up + "</span>";
+    }).join("") + "</span>";
+  }
+  function colourWords(code) {
+    const main = [...code].filter((c) => c === c.toUpperCase()).map((c) => COLOR_NAMES[c]);
+    const spl = [...code].filter((c) => c !== c.toUpperCase()).map((c) => COLOR_NAMES[c.toUpperCase()]);
+    return main.join("-") + (spl.length ? " splash " + spl.join(", ") : "");
+  }
+
+  function bindTips(root) {
+    root.querySelectorAll("[data-tip]").forEach((el) => {
+      el.addEventListener("mousemove", (e) => {
+        tip.textContent = el.getAttribute("data-tip");
+        tip.style.opacity = 1;
+        const x = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8);
+        tip.style.left = x + "px";
+        tip.style.top = e.clientY + 14 + "px";
+      });
+      el.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
+    });
+  }
+
+  // Horizontal bars. rows: [{labelHtml, label, parts:[{v, soft}], total, tip}]
+  function hbars(el, rows, max) {
+    if (!rows.length) { el.innerHTML = '<div class="empty">No data yet.</div>'; return; }
+    max = max || Math.max(1, ...rows.map((r) => r.total));
+    el.innerHTML = rows.map((r) => {
+      const parts = r.parts.filter((p) => p.v > 0);
+      const fills = parts.map((p, i) =>
+        '<div class="bar-fill' + (p.soft ? " soft" : "") + (i < parts.length - 1 ? " first-of-two" : "") +
+        '" style="width:' + (p.v / max) * 100 + '%"></div>').join("");
+      return '<div class="bar-row" data-tip="' + esc(r.tip) + '"><div class="bar-label">' + r.labelHtml +
+        '</div><div class="bar-track">' + fills + '</div><div class="bar-val">' + r.total + "</div></div>";
+    }).join("");
+    bindTips(el);
+  }
+
+  function vbars(el, labelsEl, rows) {
+    const max = Math.max(1, ...rows.map((r) => r.v));
+    el.innerHTML = rows.map((r) =>
+      '<div class="vcol" data-tip="' + esc(r.tip) + '"><span class="v">' + r.v + '</span><div class="b" style="height:' +
+      (r.v / max) * 82 + '%;min-height:' + (r.v ? 2 : 0) + 'px"></div></div>').join("");
+    labelsEl.innerHTML = rows.map((r) => "<span>" + esc(r.label) + "</span>").join("");
+    bindTips(el);
+  }
+
+  function tile(label, value, note) {
+    return '<div class="tile"><div class="label">' + label + '</div><div class="value">' + value + "</div>" +
+      (note ? '<div class="note">' + note + "</div>" : "") + "</div>";
+  }
+
+  function render() {
+    const f = stats.formats[fmt];
+    if (!f) return;
+    const t = f.trophies, lb = f.leaderboard, n = t.count;
+    document.querySelectorAll(".seg button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.fmt === fmt));
+    const fetched = new Date(stats.fetched_at);
+    $("meta").textContent = "Snapshot " + fetched.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) +
+      (t.first ? " · trophies from " + t.first.slice(0, 16) + " to " + t.last.slice(0, 16) + " UTC" : "");
+
+    const two = (t.width.find((w) => w.label === "Two colour") || {}).count || 0;
+    const sevenOh = (t.records.find((r) => r.record === "7-0") || {}).count || 0;
+    const topPair = t.pairs[0];
+    $("tiles").innerHTML =
+      tile("Trophy decks", n, FMT_LABEL[fmt]) +
+      tile("Most common pair", topPair && topPair.count ? topPair.code : "–",
+        topPair && topPair.count ? topPair.count + " trophies (" + topPair.name + ")" + (t.pairs[1] && t.pairs[1].count === topPair.count ? ", tied" : "") : "") +
+      tile("Two-colour decks", pct(two, n), two + " of " + n + " trophies") +
+      tile("Decks with a splash", pct(t.splash_decks, n), t.splash_decks + " of " + n + " trophies") +
+      tile("Flawless 7–0 runs", sevenOh, pct(sevenOh, n) + " of trophies") +
+      tile("Leaderboard median win rate", lb.median_win_rate != null ? Math.round(lb.median_win_rate * 100) + "%" : "–",
+        lb.players + " players listed");
+
+    hbars($("pairs"), t.pairs.map((p) => ({
+      labelHtml: pips(p.code) + " " + p.name, total: p.count, parts: [{ v: p.count }],
+      tip: p.name + " (" + p.code + "): " + p.count + " trophy deck" + (p.count === 1 ? "" : "s") + " · " + pct(p.count, n) + " of all trophies",
+    })));
+
+    hbars($("presence"), t.presence.map((c) => ({
+      labelHtml: pips(c.code) + " " + c.name, total: c.any,
+      parts: [{ v: c.main }, { v: c.any - c.main, soft: true }],
+      tip: c.name + ": main colour in " + c.main + ", splash only in " + (c.any - c.main) + " · in " + pct(c.any, n) + " of trophy decks",
+    })), n);
+
+    hbars($("width"), t.width.map((w) => ({
+      labelHtml: esc(w.label), total: w.count, parts: [{ v: w.count }],
+      tip: w.label + ": " + w.count + " trophy decks (" + pct(w.count, n) + ")",
+    })), n);
+    $("splash-h").textContent = "Splashed colour (" + t.splash_decks + " decks splash)";
+    hbars($("splash"), t.splash_colors.map((c) => ({
+      labelHtml: pips(c.code.toLowerCase()) + " " + c.name, total: c.count, parts: [{ v: c.count }],
+      tip: c.name + " splashed in " + c.count + " trophy deck" + (c.count === 1 ? "" : "s"),
+    })), Math.max(1, ...t.splash_colors.map((c) => c.count)));
+
+    vbars($("records"), $("records-l"), t.records.map((r) => ({
+      label: r.record, v: r.count, tip: r.record + ": " + r.count + " trophies (" + pct(r.count, n) + ")",
+    })));
+
+    const rankCard = $("rank-card");
+    if (t.start_tiers.length) {
+      rankCard.hidden = false;
+      hbars($("ranks"), t.start_tiers.map((r) => ({
+        labelHtml: esc(r.tier), total: r.count, parts: [{ v: r.count }],
+        tip: r.tier + ": " + r.count + " trophy decks (" + pct(r.count, n) + ")",
+      })));
+    } else rankCard.hidden = true;
+
+    vbars($("wr"), $("wr-l"), lb.win_rate_hist.map((b) => ({
+      label: b.label, v: b.count, tip: b.label + " win rate: " + b.count + " of " + lb.players + " listed players",
+    })));
+
+    $("arch").querySelector("tbody").innerHTML = t.archetypes.map((a) =>
+      "<tr><td>" + pips(a.code) + " " + esc(colourWords(a.code)) + ' <span style="color:var(--text-muted)">(' + a.code +
+      ')</span></td><td class="num">' + a.count + '</td><td class="num">' + pct(a.count, n) + "</td></tr>").join("");
+  }
+
+  document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => {
+    fmt = b.dataset.fmt;
+    try { localStorage.setItem("trk-fmt", fmt); } catch (e) {}
+    render();
+  }));
+
+  fetch("data/stats.json").then((r) => r.json()).then((d) => {
+    stats = d;
+    if (!stats.formats[fmt]) fmt = "PremierDraft";
+    render();
+  }).catch(() => { $("tiles").innerHTML = '<div class="empty">Could not load data/stats.json.</div>'; });
+})();
+</script>
+</body>
+</html>

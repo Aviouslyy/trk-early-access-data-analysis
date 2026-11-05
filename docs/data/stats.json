@@ -1,0 +1,528 @@
+{
+ "expansion": "TRK",
+ "fetched_at": "2026-11-05T17:44:01+00:00",
+ "formats": {
+  "PremierDraft": {
+   "trophies": {
+    "count": 30,
+    "first": "2026-11-04 21:21:23",
+    "last": "2026-11-05 17:19:46",
+    "records": [
+     {
+      "record": "7-0",
+      "count": 4
+     },
+     {
+      "record": "7-1",
+      "count": 4
+     },
+     {
+      "record": "7-2",
+      "count": 22
+     }
+    ],
+    "avg_losses": 1.6,
+    "pairs": [
+     {
+      "code": "UR",
+      "name": "Izzet",
+      "count": 4
+     },
+     {
+      "code": "WR",
+      "name": "Boros",
+      "count": 4
+     },
+     {
+      "code": "WB",
+      "name": "Orzhov",
+      "count": 3
+     },
+     {
+      "code": "UG",
+      "name": "Simic",
+      "count": 3
+     },
+     {
+      "code": "WU",
+      "name": "Azorius",
+      "count": 2
+     },
+     {
+      "code": "BR",
+      "name": "Rakdos",
+      "count": 2
+     },
+     {
+      "code": "WG",
+      "name": "Selesnya",
+      "count": 2
+     },
+     {
+      "code": "BG",
+      "name": "Golgari",
+      "count": 2
+     },
+     {
+      "code": "RG",
+      "name": "Gruul",
+      "count": 1
+     },
+     {
+      "code": "UB",
+      "name": "Dimir",
+      "count": 0
+     }
+    ],
+    "archetypes": [
+     {
+      "code": "UR",
+      "count": 4
+     },
+     {
+      "code": "WR",
+      "count": 4
+     },
+     {
+      "code": "WB",
+      "count": 3
+     },
+     {
+      "code": "UG",
+      "count": 3
+     },
+     {
+      "code": "BG",
+      "count": 2
+     },
+     {
+      "code": "UBG",
+      "count": 2
+     },
+     {
+      "code": "WG",
+      "count": 2
+     },
+     {
+      "code": "BR",
+      "count": 2
+     },
+     {
+      "code": "WU",
+      "count": 2
+     },
+     {
+      "code": "B",
+      "count": 1
+     },
+     {
+      "code": "W",
+      "count": 1
+     },
+     {
+      "code": "G",
+      "count": 1
+     },
+     {
+      "code": "R",
+      "count": 1
+     },
+     {
+      "code": "URG",
+      "count": 1
+     },
+     {
+      "code": "RG",
+      "count": 1
+     }
+    ],
+    "width": [
+     {
+      "label": "Mono",
+      "count": 4
+     },
+     {
+      "label": "Two colour",
+      "count": 23
+     },
+     {
+      "label": "Three+ colour",
+      "count": 3
+     }
+    ],
+    "splash_decks": 9,
+    "splash_colors": [
+     {
+      "code": "W",
+      "name": "White",
+      "count": 4
+     },
+     {
+      "code": "U",
+      "name": "Blue",
+      "count": 1
+     },
+     {
+      "code": "B",
+      "name": "Black",
+      "count": 2
+     },
+     {
+      "code": "R",
+      "name": "Red",
+      "count": 0
+     },
+     {
+      "code": "G",
+      "name": "Green",
+      "count": 2
+     }
+    ],
+    "presence": [
+     {
+      "code": "W",
+      "name": "White",
+      "main": 12,
+      "any": 16
+     },
+     {
+      "code": "U",
+      "name": "Blue",
+      "main": 12,
+      "any": 13
+     },
+     {
+      "code": "B",
+      "name": "Black",
+      "main": 10,
+      "any": 12
+     },
+     {
+      "code": "R",
+      "name": "Red",
+      "main": 13,
+      "any": 13
+     },
+     {
+      "code": "G",
+      "name": "Green",
+      "main": 12,
+      "any": 14
+     }
+    ],
+    "start_tiers": [
+     {
+      "tier": "Bronze",
+      "count": 6
+     },
+     {
+      "tier": "Silver",
+      "count": 6
+     },
+     {
+      "tier": "Gold",
+      "count": 7
+     },
+     {
+      "tier": "Platinum",
+      "count": 9
+     },
+     {
+      "tier": "Diamond",
+      "count": 2
+     }
+    ]
+   },
+   "leaderboard": {
+    "players": 82,
+    "total_wins": 747,
+    "total_trophies": 26,
+    "players_with_trophy": 21,
+    "median_wins": 8.0,
+    "max_wins": 29,
+    "median_win_rate": 0.5314,
+    "max_win_rate": 1.0,
+    "win_rate_hist": [
+     {
+      "label": "<40%",
+      "count": 19
+     },
+     {
+      "label": "40\u201350%",
+      "count": 13
+     },
+     {
+      "label": "50\u201355%",
+      "count": 17
+     },
+     {
+      "label": "55\u201360%",
+      "count": 6
+     },
+     {
+      "label": "60\u201365%",
+      "count": 11
+     },
+     {
+      "label": "65\u201370%",
+      "count": 5
+     },
+     {
+      "label": "70%+",
+      "count": 11
+     }
+    ],
+    "rank_tiers": [
+     {
+      "tier": "Bronze",
+      "count": 21
+     },
+     {
+      "tier": "Silver",
+      "count": 9
+     },
+     {
+      "tier": "Gold",
+      "count": 25
+     },
+     {
+      "tier": "Platinum",
+      "count": 25
+     },
+     {
+      "tier": "Diamond",
+      "count": 2
+     }
+    ]
+   }
+  },
+  "Sealed": {
+   "trophies": {
+    "count": 11,
+    "first": "2026-11-04 20:17:18",
+    "last": "2026-11-05 16:47:04",
+    "records": [
+     {
+      "record": "7-0",
+      "count": 1
+     },
+     {
+      "record": "7-1",
+      "count": 5
+     },
+     {
+      "record": "7-2",
+      "count": 5
+     }
+    ],
+    "avg_losses": 1.36,
+    "pairs": [
+     {
+      "code": "WG",
+      "name": "Selesnya",
+      "count": 2
+     },
+     {
+      "code": "WB",
+      "name": "Orzhov",
+      "count": 2
+     },
+     {
+      "code": "WU",
+      "name": "Azorius",
+      "count": 1
+     },
+     {
+      "code": "UB",
+      "name": "Dimir",
+      "count": 1
+     },
+     {
+      "code": "BR",
+      "name": "Rakdos",
+      "count": 1
+     },
+     {
+      "code": "BG",
+      "name": "Golgari",
+      "count": 1
+     },
+     {
+      "code": "WR",
+      "name": "Boros",
+      "count": 1
+     },
+     {
+      "code": "RG",
+      "name": "Gruul",
+      "count": 0
+     },
+     {
+      "code": "UR",
+      "name": "Izzet",
+      "count": 0
+     },
+     {
+      "code": "UG",
+      "name": "Simic",
+      "count": 0
+     }
+    ],
+    "archetypes": [
+     {
+      "code": "WB",
+      "count": 2
+     },
+     {
+      "code": "WG",
+      "count": 2
+     },
+     {
+      "code": "UBR",
+      "count": 1
+     },
+     {
+      "code": "WU",
+      "count": 1
+     },
+     {
+      "code": "BG",
+      "count": 1
+     },
+     {
+      "code": "WUB",
+      "count": 1
+     },
+     {
+      "code": "WR",
+      "count": 1
+     },
+     {
+      "code": "BR",
+      "count": 1
+     },
+     {
+      "code": "UB",
+      "count": 1
+     }
+    ],
+    "width": [
+     {
+      "label": "Mono",
+      "count": 0
+     },
+     {
+      "label": "Two colour",
+      "count": 9
+     },
+     {
+      "label": "Three+ colour",
+      "count": 2
+     }
+    ],
+    "splash_decks": 4,
+    "splash_colors": [
+     {
+      "code": "W",
+      "name": "White",
+      "count": 2
+     },
+     {
+      "code": "U",
+      "name": "Blue",
+      "count": 2
+     },
+     {
+      "code": "B",
+      "name": "Black",
+      "count": 1
+     },
+     {
+      "code": "R",
+      "name": "Red",
+      "count": 2
+     },
+     {
+      "code": "G",
+      "name": "Green",
+      "count": 1
+     }
+    ],
+    "presence": [
+     {
+      "code": "W",
+      "name": "White",
+      "main": 7,
+      "any": 9
+     },
+     {
+      "code": "U",
+      "name": "Blue",
+      "main": 4,
+      "any": 6
+     },
+     {
+      "code": "B",
+      "name": "Black",
+      "main": 7,
+      "any": 8
+     },
+     {
+      "code": "R",
+      "name": "Red",
+      "main": 3,
+      "any": 5
+     },
+     {
+      "code": "G",
+      "name": "Green",
+      "main": 3,
+      "any": 4
+     }
+    ],
+    "start_tiers": []
+   },
+   "leaderboard": {
+    "players": 52,
+    "total_wins": 326,
+    "total_trophies": 9,
+    "players_with_trophy": 8,
+    "median_wins": 4.5,
+    "max_wins": 26,
+    "median_win_rate": 0.547,
+    "max_win_rate": 1.0,
+    "win_rate_hist": [
+     {
+      "label": "<40%",
+      "count": 12
+     },
+     {
+      "label": "40\u201350%",
+      "count": 7
+     },
+     {
+      "label": "50\u201355%",
+      "count": 7
+     },
+     {
+      "label": "55\u201360%",
+      "count": 7
+     },
+     {
+      "label": "60\u201365%",
+      "count": 7
+     },
+     {
+      "label": "65\u201370%",
+      "count": 4
+     },
+     {
+      "label": "70%+",
+      "count": 8
+     }
+    ],
+    "rank_tiers": []
+   }
+  }
+ }
+}
