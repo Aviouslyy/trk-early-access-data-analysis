@@ -6,95 +6,25 @@
 <title>Star Trek Early Access</title>
 <meta name="description" content="Early-access snapshot of Magic: The Gathering | Star Trek (TRK) limited results on MTG Arena, using data from 17Lands.">
 <meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Antonio:wght@600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="site.css">
 <style>
-:root {
-  color-scheme: light;
-  --bg: #f4f3ef;
-  --surface-1: #fcfcfb;
-  --border: #e2e0da;
-  --grid: #ecebe6;
-  --text-primary: #0b0b0b;
-  --text-secondary: #52514e;
-  --text-muted: #77756f;
-  --series-1: #2a78d6;
-  --series-1-soft: #a9c8ef;
-  --track: #e9eef6;
-  --accent-ink: #1d5fae;
-  --tip-bg: #0b0b0b;
-  --tip-fg: #f6f5f1;
-  --pip-W: #f3ead0; --pip-W-ink: #5b4d1f;
-  --pip-U: #2a78d6; --pip-U-ink: #fff;
-  --pip-B: #2d2b29; --pip-B-ink: #fff;
-  --pip-R: #d6403f; --pip-R-ink: #fff;
-  --pip-G: #1f8a3a; --pip-G-ink: #fff;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --bg: #121211;
-    --surface-1: #1a1a19;
-    --border: #2e2d2b;
-    --grid: #262624;
-    --text-primary: #f0efec;
-    --text-secondary: #c3c2b7;
-    --text-muted: #9a998f;
-    --series-1: #3987e5;
-    --series-1-soft: #2a4a72;
-    --track: #232a33;
-    --accent-ink: #8db8f0;
-    --tip-bg: #f0efec;
-    --tip-fg: #121211;
-    --pip-B: #4a4744;
-  }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #121211;
-  --surface-1: #1a1a19;
-  --border: #2e2d2b;
-  --grid: #262624;
-  --text-primary: #f0efec;
-  --text-secondary: #c3c2b7;
-  --text-muted: #9a998f;
-  --series-1: #3987e5;
-  --series-1-soft: #2a4a72;
-  --track: #232a33;
-  --accent-ink: #8db8f0;
-  --tip-bg: #f0efec;
-  --tip-fg: #121211;
-  --pip-B: #4a4744;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0; background: var(--bg); color: var(--text-primary);
-  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-}
-a { color: var(--accent-ink); }
-.wrap { max-width: 1040px; margin: 0 auto; padding: 24px 16px 64px; }
-header h1 { font-size: 28px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
-header .sub { color: var(--text-secondary); margin: 0 0 16px; }
 .source {
-  background: var(--surface-1); border: 1px solid var(--border); border-left: 4px solid var(--series-1);
+  background: var(--surface-1); border: 1px solid var(--border); border-left: 4px solid var(--here);
   border-radius: 8px; padding: 12px 14px; margin-bottom: 20px; color: var(--text-secondary);
 }
 .source strong { color: var(--text-primary); }
 .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 8px 0 20px; }
-.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface-1); }
-.seg button {
-  font: inherit; border: 0; background: transparent; color: var(--text-secondary);
-  padding: 7px 14px; cursor: pointer; min-height: 36px;
-}
-.seg button[aria-pressed="true"] { background: var(--series-1); color: #fff; }
-.seg button:focus-visible { outline: 2px solid var(--series-1); outline-offset: -2px; }
-.meta { color: var(--text-muted); font-size: 13px; }
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
 .tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
 .tile .label { color: var(--text-secondary); font-size: 13px; }
-.tile .value { font-size: 26px; font-weight: 600; line-height: 1.2; margin-top: 4px; }
+.tile .value { font: 600 30px/1.15 var(--display); margin-top: 4px; }
 .tile .note { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 16px; }
 .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 16px; min-width: 0; }
-.card h2 { font-size: 16px; margin: 0 0 2px; }
+.card h2 { font-size: 20px; margin: 0 0 2px; }
 .card .desc { color: var(--text-secondary); font-size: 13px; margin: 0 0 14px; }
 .card.full { grid-column: 1 / -1; }
 .bars { display: flex; flex-direction: column; gap: 6px; }
@@ -138,12 +68,20 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   position: fixed; pointer-events: none; z-index: 10; background: var(--tip-bg); color: var(--tip-fg);
   font-size: 12px; padding: 6px 8px; border-radius: 6px; max-width: 240px; opacity: 0; transition: opacity .08s;
 }
-footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
 </style>
 </head>
-<body>
+<body class="p-stats">
 <div class="wrap">
-  <header>
+  <header class="bridge">
+    <div class="elbow" aria-hidden="true"></div>
+    <div class="bar"><a class="site" href="index.html">TRK early access</a><span>Star Trek limited, from 17Lands trophy decks</span></div>
+    <nav aria-label="Pages">
+      <a href="index.html" aria-current="page"><b>Trophy stats</b><span>What's winning, by colour</span></a>
+      <a href="cards.html"><b>Card picks</b><span>Every card in a trophy deck</span></a>
+      <a href="follow.html"><b>Follow a draft</b><span>Pick along with a trophy drafter</span></a>
+    </nav>
+  </header>
+  <div>
     <h1>Star Trek early access: what's winning</h1>
     <p class="sub">A snapshot of MTG Arena trophy decks and leaderboard results from the <em>Magic: The Gathering | Star Trek</em> (TRK) early access event.</p>
     <div class="source">
@@ -151,7 +89,7 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
       Trophy decks from <a href="https://www.17lands.com/trophy_decks" target="_blank" rel="noopener">17lands.com/trophy_decks</a> and leaderboard totals from <a href="https://www.17lands.com/leaderboard" target="_blank" rel="noopener">17lands.com/leaderboard</a>.
       This is an independent summary for a small testing group, not endorsed by 17Lands. Player names are left out. Go to 17Lands for live and complete numbers.
     </div>
-  </header>
+  </div>
 
   <div class="controls">
     <div class="seg" role="group" aria-label="Format">
@@ -159,7 +97,6 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
       <button type="button" data-fmt="Sealed" aria-pressed="false">Sealed</button>
     </div>
     <span class="meta" id="meta"></span>
-    <span style="margin-left:auto"><a href="cards.html">Trophy card picks</a> · <a href="follow.html">Follow a trophy draft →</a></span>
   </div>
 
   <section class="tiles" id="tiles" aria-label="Headline numbers"></section>

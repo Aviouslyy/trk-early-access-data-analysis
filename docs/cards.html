@@ -6,44 +6,15 @@
 <title>Trophy Deck Cards</title>
 <meta name="description" content="Which Star Trek (TRK) cards made the main deck of 17Lands Premier Draft trophy decks, how many copies, and how early they were picked.">
 <meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Antonio:wght@600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="site.css">
 <style>
-:root {
-  color-scheme: light;
-  --bg: #f4f3ef; --surface-1: #fcfcfb; --border: #e2e0da; --grid: #ecebe6;
-  --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77756f;
-  --series-1: #2a78d6; --series-1-soft: #a9c8ef; --accent-ink: #1d5fae;
-  --pip-W: #f3ead0; --pip-W-ink: #5b4d1f; --pip-U: #2a78d6; --pip-U-ink: #fff;
-  --pip-B: #2d2b29; --pip-B-ink: #fff; --pip-R: #d6403f; --pip-R-ink: #fff;
-  --pip-G: #1f8a3a; --pip-G-ink: #fff; --pip-C: #cfccc4; --pip-C-ink: #2d2b29;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --bg: #121211; --surface-1: #1a1a19; --border: #2e2d2b; --grid: #262624;
-    --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #9a998f;
-    --series-1: #3987e5; --series-1-soft: #2a4a72; --accent-ink: #8db8f0; --pip-B: #4a4744; --pip-C: #5a5853; --pip-C-ink: #f0efec;
-  }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #121211; --surface-1: #1a1a19; --border: #2e2d2b; --grid: #262624;
-  --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #9a998f;
-  --series-1: #3987e5; --series-1-soft: #2a4a72; --accent-ink: #8db8f0; --pip-B: #4a4744; --pip-C: #5a5853; --pip-C-ink: #f0efec;
-}
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text-primary); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-a { color: var(--accent-ink); }
-.wrap { max-width: 1040px; margin: 0 auto; padding: 24px 16px 64px; }
-h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; }
-.sub { color: var(--text-secondary); margin: 0 0 16px; }
-.note { background: var(--surface-1); border: 1px solid var(--border); border-left: 4px solid var(--series-1); border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; color: var(--text-secondary); font-size: 14px; }
+.note { background: var(--surface-1); border: 1px solid var(--border); border-left: 4px solid var(--here); border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; color: var(--text-secondary); font-size: 14px; }
 .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
 input[type=search] { font: inherit; min-height: 36px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-1); color: var(--text-primary); padding: 6px 12px; width: min(100%, 280px); }
-.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface-1); }
-.seg button { font: inherit; border: 0; background: transparent; color: var(--text-secondary); padding: 6px 10px; cursor: pointer; min-height: 36px; }
-.seg button[aria-pressed="true"] { background: var(--series-1); color: #fff; }
-:is(input, button):focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
-.meta { color: var(--text-muted); font-size: 13px; }
+:is(input, button):focus-visible { outline: 2px solid var(--here); outline-offset: 2px; }
 .panel { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 8px 0; }
 .table-scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -59,7 +30,7 @@ tr:hover td { background: var(--grid); }
 .name img { width: 32px; height: 45px; border-radius: 3px; object-fit: cover; background: var(--grid); flex: none; }
 .name span { white-space: normal; min-width: 140px; }
 .meter { display: inline-block; width: 60px; height: 8px; background: var(--grid); border-radius: 4px; vertical-align: middle; margin-left: 6px; overflow: hidden; }
-.meter i { display: block; height: 100%; background: var(--series-1); }
+.meter i { display: block; height: 100%; background: var(--here); }
 .pips { display: inline-flex; gap: 2px; vertical-align: -3px; }
 .pip { display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 3px; border-radius: 8px; font-size: 10px; font-weight: 700; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
 .pip-W { background: var(--pip-W); color: var(--pip-W-ink); } .pip-U { background: var(--pip-U); color: var(--pip-U-ink); }
@@ -70,7 +41,7 @@ tr.row.open td { background: var(--grid); border-bottom-color: transparent; }
 .name button { font: inherit; color: inherit; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; white-space: normal; min-width: 140px; }
 .name button::after { content: " ▸"; color: var(--text-muted); }
 .name button[aria-expanded="true"]::after { content: " ▾"; }
-.name button:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+.name button:focus-visible { outline: 2px solid var(--here); outline-offset: 2px; }
 td.detail { background: var(--grid); white-space: normal; padding: 4px 10px 14px; }
 .pip.lc { min-width: 13px; height: 13px; font-size: 8px; opacity: .8; }
 .detail-inner { position: sticky; left: 10px; max-width: min(1000px, calc(100vw - 56px)); }
@@ -78,8 +49,8 @@ td.detail { background: var(--grid); white-space: normal; padding: 4px 10px 14px
 .deck-head h3 { font-size: 14px; margin: 0 8px 0 0; }
 .deck-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
 .deck-tabs button { font: inherit; font-size: 13px; display: inline-flex; gap: 6px; align-items: center; min-height: 32px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-1); color: var(--text-secondary); cursor: pointer; }
-.deck-tabs button[aria-selected="true"] { border-color: var(--series-1); box-shadow: inset 0 0 0 1px var(--series-1); color: var(--text-primary); }
-.deck-tabs button:focus-visible, .deck-toggle:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+.deck-tabs button[aria-selected="true"] { border-color: var(--here); box-shadow: inset 0 0 0 1px var(--here); color: var(--text-primary); }
+.deck-tabs button:focus-visible, .deck-toggle:focus-visible { outline: 2px solid var(--here); outline-offset: 2px; }
 .deck-scroll { overflow-x: auto; padding-bottom: 6px; }
 .deck { display: flex; gap: 8px; align-items: flex-start; }
 .deck-col { flex: none; width: 112px; }
@@ -87,19 +58,26 @@ td.detail { background: var(--grid); white-space: normal; padding: 4px 10px 14px
 .deck-card { position: relative; display: block; }
 .deck-card + .deck-card { margin-top: -122px; }
 .deck-card img { display: block; width: 112px; aspect-ratio: 488 / 680; border-radius: 6px; background: var(--grid); box-shadow: 0 1px 2px rgba(0,0,0,.3); }
-.deck-card.hit img { outline: 3px solid var(--series-1); outline-offset: -1px; }
+.deck-card.hit img { outline: 3px solid var(--here); outline-offset: -1px; }
 .deck-card .x { position: absolute; top: 16px; right: 4px; background: rgba(0,0,0,.75); color: #fff; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 0 4px; }
 .deck-card:hover { z-index: 2; }
 .deck-foot { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 8px; font-size: 13px; }
 .deck-toggle { font: inherit; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-1); color: var(--accent-ink); padding: 4px 10px; min-height: 32px; cursor: pointer; }
 #preview { position: fixed; pointer-events: none; z-index: 10; width: 220px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.35); display: none; }
 .empty { color: var(--text-muted); padding: 12px; }
-footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
 </style>
 </head>
-<body>
+<body class="p-cards">
 <div class="wrap">
-  <p><a href="./">← Back to the trophy stats</a> · <a href="follow.html">Follow a trophy draft</a></p>
+  <header class="bridge">
+    <div class="elbow" aria-hidden="true"></div>
+    <div class="bar"><a class="site" href="index.html">TRK early access</a><span>Star Trek limited, from 17Lands trophy decks</span></div>
+    <nav aria-label="Pages">
+      <a href="index.html"><b>Trophy stats</b><span>What's winning, by colour</span></a>
+      <a href="cards.html" aria-current="page"><b>Card picks</b><span>Every card in a trophy deck</span></a>
+      <a href="follow.html"><b>Follow a draft</b><span>Pick along with a trophy drafter</span></a>
+    </nav>
+  </header>
   <h1>Cards in trophy decks</h1>
   <p class="sub">Every card that made the main deck of a Premier Draft trophy deck, ranked by how many of those decks played it. Decklists and picks are from <a href="https://www.17lands.com/trophy_decks" target="_blank" rel="noopener">17Lands trophy decks</a>; rarity is from <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a>. Open a card to see the decks that played it.</p>
   <div class="note">
