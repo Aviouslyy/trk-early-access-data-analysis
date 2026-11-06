@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trophy Draft Follow-Along</title>
+<meta name="description" content="Follow a Star Trek (TRK) Premier Draft trophy drafter pick by pick and see how often you match them. Data from 17Lands.">
+<meta name="robots" content="noindex">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f3ef;
+  --surface-1: #fcfcfb;
+  --border: #e2e0da;
+  --grid: #ecebe6;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #77756f;
+  --series-1: #2a78d6;
+  --accent-ink: #1d5fae;
+  --good: #1f8a3a;
+  --bad: #d6403f;
+  --pip-W: #f3ead0; --pip-W-ink: #5b4d1f;
+  --pip-U: #2a78d6; --pip-U-ink: #fff;
+  --pip-B: #2d2b29; --pip-B-ink: #fff;
+  --pip-R: #d6403f; --pip-R-ink: #fff;
+  --pip-G: #1f8a3a; --pip-G-ink: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211; --surface-1: #1a1a19; --border: #2e2d2b; --grid: #262624;
+    --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #9a998f;
+    --series-1: #3987e5; --accent-ink: #8db8f0; --good: #3fb35c; --bad: #e86160; --pip-B: #4a4744;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface-1: #1a1a19; --border: #2e2d2b; --grid: #262624;
+  --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #9a998f;
+  --series-1: #3987e5; --accent-ink: #8db8f0; --good: #3fb35c; --bad: #e86160; --pip-B: #4a4744;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text-primary); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--accent-ink); }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; }
+.sub { color: var(--text-secondary); margin: 0 0 16px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+select, button { font: inherit; min-height: 36px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-1); color: var(--text-primary); padding: 6px 12px; }
+button { cursor: pointer; }
+button.primary { background: var(--series-1); border-color: var(--series-1); color: #fff; }
+button:disabled { opacity: .5; cursor: default; }
+:is(select, button):focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+.layout { display: grid; grid-template-columns: 1fr 260px; gap: 16px; align-items: start; }
+@media (max-width: 760px) { .layout { grid-template-columns: 1fr; } }
+.panel { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 14px; min-width: 0; }
+.status { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; margin-bottom: 12px; }
+.status h2 { font-size: 18px; margin: 0; }
+.status .score { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.result { font-weight: 600; min-height: 1.5em; }
+.result.good { color: var(--good); }
+.result.bad { color: var(--bad); }
+.pack { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(140px, 45%), 1fr)); gap: 10px; }
+.pack button { padding: 0; border: 0; background: none; border-radius: 9px; position: relative; aspect-ratio: 488 / 680; overflow: hidden; }
+.pack img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 9px; background: var(--grid); }
+.pack .alt { position: absolute; inset: 0; display: grid; place-items: center; padding: 8px; font-size: 13px; text-align: center; background: var(--grid); border-radius: 9px; }
+.pack button:hover:not(:disabled) img { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.25); }
+.pack button:disabled { opacity: 1; }
+.revealed button { opacity: .35 !important; }
+.revealed button.theirs, .revealed button.mine { opacity: 1 !important; }
+.pack button.theirs { outline: 4px solid var(--good); outline-offset: -1px; }
+.pack button.mine:not(.theirs) { outline: 4px solid var(--bad); outline-offset: -1px; }
+.tag { position: absolute; left: 6px; bottom: 6px; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; color: #fff; }
+.tag.t { background: var(--good); }
+.tag.m { background: var(--bad); }
+.pool h3 { font-size: 14px; margin: 0 0 8px; }
+.pool ol { margin: 0; padding-left: 26px; font-size: 13px; max-height: 70vh; overflow: auto; }
+.pool li.miss { color: var(--text-secondary); }
+.pool li .you { color: var(--bad); font-size: 12px; }
+.pool .empty { color: var(--text-muted); font-size: 13px; }
+.pips { display: inline-flex; gap: 2px; vertical-align: -3px; }
+.pip { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 700; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+.pip.lc { width: 14px; height: 14px; font-size: 8px; opacity: .8; }
+.pip-W { background: var(--pip-W); color: var(--pip-W-ink); } .pip-U { background: var(--pip-U); color: var(--pip-U-ink); }
+.pip-B { background: var(--pip-B); color: var(--pip-B-ink); } .pip-R { background: var(--pip-R); color: var(--pip-R-ink); }
+.pip-G { background: var(--pip-G); color: var(--pip-G-ink); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.hint { color: var(--text-muted); font-size: 13px; margin-top: 12px; }
+footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a href="./">← Back to the trophy stats</a></p>
+  <h1>Follow a trophy draft</h1>
+  <p class="sub">Pick from each pack a 17Lands Premier Draft trophy drafter saw, then see whether you took the same card. The deck's colours stay hidden until the end.</p>
+
+  <div class="controls">
+    <label for="draft" class="sr">Draft</label>
+    <select id="draft"></select>
+    <button type="button" id="random">Random draft</button>
+    <button type="button" id="restart">Restart</button>
+  </div>
+
+  <div class="layout">
+    <section class="panel" aria-live="polite">
+      <div class="status">
+        <h2 id="where">Loading…</h2>
+        <span class="score" id="score"></span>
+      </div>
+      <div class="result" id="result"></div>
+      <div class="pack" id="pack"></div>
+      <div class="controls" style="margin:14px 0 0">
+        <button type="button" class="primary" id="next" hidden>Next pick</button>
+      </div>
+      <p class="hint">Green is the trophy drafter's pick. Red is yours when it's different. Press Enter or → for the next pick.</p>
+    </section>
+    <aside class="panel pool">
+      <h3>Their picks so far</h3>
+      <div id="pool"><div class="empty">Nothing yet.</div></div>
+    </aside>
+  </div>
+
+  <footer>
+    Draft data from <a href="https://www.17lands.com" target="_blank" rel="noopener">17Lands</a> trophy decks, collected once. Draft ids and player names are left out. Card images are served by 17Lands. Magic: The Gathering is a trademark of Wizards of the Coast. Star Trek is a trademark of CBS Studios. This page isn't affiliated with any of them.
+  </footer>
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const pips = (code) => '<span class="pips" aria-hidden="true">' + [...code].map((c) => {
+    const up = c.toUpperCase();
+    return '<span class="pip pip-' + up + (c !== up ? " lc" : "") + '">' + up + "</span>";
+  }).join("") + "</span>";
+
+  let data, draft, i, mine, revealed;
+
+  function start(idx) {
+    draft = data.drafts[idx];
+    $("draft").value = idx;
+    i = 0; mine = []; revealed = false;
+    render();
+  }
+
+  function render() {
+    const picks = draft.picks;
+    const done = i >= picks.length;
+    const matches = mine.filter((m, k) => m === picks[k].picked).length;
+    $("score").textContent = mine.length ? matches + " of " + mine.length + " matched (" + Math.round(matches / mine.length * 100) + "%)" : "";
+    $("pool").innerHTML = mine.length ? "<ol>" + mine.map((m, k) => {
+      const p = picks[k].picked, hit = m === p;
+      return '<li class="' + (hit ? "" : "miss") + '">' + esc(data.cards[p].name) +
+        (hit ? " ✓" : ' <span class="you">(you: ' + esc(data.cards[m].name) + ")</span>") + "</li>";
+    }).join("") + "</ol>" : '<div class="empty">Nothing yet.</div>';
+
+    if (done) {
+      $("where").innerHTML = "Done. Their deck was " + pips(draft.colors) + " " + esc(draft.colors) + ", " + esc(draft.record);
+      $("result").className = "result";
+      $("result").textContent = "You matched " + matches + " of " + picks.length + " picks.";
+      $("pack").innerHTML = "";
+      $("next").hidden = true;
+      return;
+    }
+    const p = picks[i];
+    $("where").textContent = "Pack " + (p.pack + 1) + ", pick " + (p.pick + 1);
+    const pack = $("pack");
+    pack.classList.toggle("revealed", revealed);
+    pack.innerHTML = p.available.map((c) => {
+      const card = data.cards[c], theirs = revealed && c === p.picked, me = revealed && c === mine[i];
+      return '<button type="button" data-c="' + c + '" class="' + (theirs ? "theirs " : "") + (me ? "mine" : "") + '"' +
+        (revealed ? " disabled" : "") + ' aria-label="' + esc(card.name) + '"><span class="alt">' + esc(card.name) + "</span>" +
+        '<img src="' + esc(card.img) + '" alt="" loading="lazy" onerror="this.remove()">' +
+        (theirs ? '<span class="tag t">Their pick</span>' : me ? '<span class="tag m">Your pick</span>' : "") + "</button>";
+    }).join("");
+    const r = $("result");
+    if (revealed) {
+      const hit = mine[i] === p.picked;
+      r.className = "result " + (hit ? "good" : "bad");
+      r.textContent = hit ? "Match! They took " + data.cards[p.picked].name + "." : "They took " + data.cards[p.picked].name + ".";
+    } else { r.className = "result"; r.textContent = "Your pick?"; }
+    $("next").hidden = !revealed;
+    $("next").textContent = i === picks.length - 1 ? "See results" : "Next pick";
+    if (revealed) $("next").focus();
+  }
+
+  $("pack").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-c]");
+    if (!b || revealed) return;
+    mine[i] = +b.dataset.c;
+    revealed = true;
+    render();
+  });
+  function next() { if (!revealed) return; i++; revealed = false; render(); }
+  $("next").addEventListener("click", next);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight" || (e.key === "Enter" && e.target === document.body)) next();
+  });
+  $("draft").addEventListener("change", (e) => start(+e.target.value));
+  $("random").addEventListener("click", () => start(Math.floor(Math.random() * data.drafts.length)));
+  $("restart").addEventListener("click", () => start(+$("draft").value));
+
+  fetch("data/drafts.json").then((r) => r.json()).then((d) => {
+    data = d;
+    if (!data.drafts.length) { $("where").textContent = "No trophy drafts with pick data yet."; return; }
+    $("draft").innerHTML = data.drafts.map((x, k) =>
+      '<option value="' + k + '">Trophy draft ' + (k + 1) + " · " + esc(x.record) + (x.start_rank ? " · " + esc(x.start_rank) : "") + "</option>").join("");
+    start(Math.floor(Math.random() * data.drafts.length));
+  }).catch(() => { $("where").textContent = "Could not load data/drafts.json."; });
+})();
+</script>
+</body>
+</html>
