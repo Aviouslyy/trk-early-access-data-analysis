@@ -48,6 +48,18 @@ select:focus-visible { outline: 2px solid var(--here); outline-offset: 2px; }
 .btn:hover { filter: brightness(1.05); text-decoration: underline; }
 .btn:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
 .deck-foot .meta { margin-left: auto; }
+.games { margin-top: 10px; }
+.games h3 { font-size: 13px; margin: 0 0 6px; color: var(--text-secondary); font-weight: 600; }
+.games ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.game { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 3px 10px 3px 4px; border: 1px solid var(--border); border-left: 4px solid var(--bad); border-radius: 8px; font-size: 13px; color: var(--text-primary); text-decoration: none; background: var(--surface-1); font-variant-numeric: tabular-nums; }
+.game.won { border-left-color: var(--good); }
+.game .res { font-weight: 700; width: 1.2em; text-align: center; }
+.game.won .res { color: var(--good); } .game:not(.won) .res { color: var(--bad); }
+.game .n { color: var(--text-muted); }
+.game .ext { color: var(--text-muted); font-size: 11px; }
+a.game:hover { border-color: var(--here); text-decoration: none; }
+a.game:hover .ext { color: var(--accent-ink); }
+a.game:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
 #preview { position: fixed; pointer-events: none; z-index: 10; width: 220px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.35); display: none; }
 .empty { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 16px; color: var(--text-secondary); }
 @media (max-width: 640px) { .when { margin-left: 0; width: 100%; } .deck-foot .meta { margin-left: 0; } }
@@ -66,7 +78,7 @@ select:focus-visible { outline: 2px solid var(--here); outline-offset: 2px; }
     </nav>
   </header>
   <h1>Trophy deck gallery</h1>
-  <p class="sub">The main deck of every Premier Draft trophy run collected from <a href="https://www.17lands.com/trophy_decks" target="_blank" rel="noopener">17Lands trophy decks</a>, newest first. Under each deck, <em>Replay the draft</em> lets you pick along with that drafter, pack by pack, on the <a href="follow.html">follow-a-draft</a> page.</p>
+  <p class="sub">The main deck of every Premier Draft trophy run collected from <a href="https://www.17lands.com/trophy_decks" target="_blank" rel="noopener">17Lands trophy decks</a>, newest first. Under each deck, <em>Replay the draft</em> lets you pick along with that drafter, pack by pack, on the <a href="follow.html">follow-a-draft</a> page, and each game of the run links to its replay on 17Lands.</p>
 
   <div class="controls">
     <label for="colours" class="meta">Main colours</label>
@@ -83,7 +95,7 @@ select:focus-visible { outline: 2px solid var(--here); outline-offset: 2px; }
   <div class="decks" id="decks"><div class="empty">Loading…</div></div>
 
   <footer>
-    Decklists and picks from <a href="https://www.17lands.com" target="_blank" rel="noopener">17Lands</a> trophy decks, collected once. Only Premier Draft trophies that 17Lands had full pick data for are included, so this is a subset of all trophies. Draft ids and player names are left out. Card images are served by 17Lands. Magic: The Gathering is a trademark of Wizards of the Coast. Star Trek is a trademark of CBS Studios. This page isn't affiliated with any of them.
+    Decklists and picks from <a href="https://www.17lands.com" target="_blank" rel="noopener">17Lands</a> trophy decks, collected once. Only Premier Draft trophies that 17Lands had full pick data for are included, so this is a subset of all trophies. Player names are left out; game replays and decks open on 17Lands. Card images are served by 17Lands. Magic: The Gathering is a trademark of Wizards of the Coast. Star Trek is a trademark of CBS Studios. This page isn't affiliated with any of them.
   </footer>
 </div>
 <img id="preview" alt="">
@@ -143,6 +155,21 @@ select:focus-visible { outline: 2px solid var(--here); outline-offset: 2px; }
     return { spells, lands, creatures, avg: spells ? mv / spells : 0 };
   }
 
+  const L17 = "https://www.17lands.com";
+  function gamesHtml(d) {
+    if (!d.id || !d.games || !d.games.length) return "";
+    const multi = d.games.some((g) => g.g > 0); // best-of-three: show the game number in the match
+    return '<div class="games"><h3>Game replays on 17Lands</h3><ol>' + d.games.map((g) => {
+      const label = (g.won ? "Won" : "Lost") + " match " + (g.m + 1) + (multi ? " game " + (g.g + 1) : "") +
+        (g.opp ? " against " + g.opp : "") + ", on the " + (g.play ? "play" : "draw") + ", " + g.turns + " turns";
+      const body = '<span class="res" aria-hidden="true">' + (g.won ? "W" : "L") + '</span><span class="n" aria-hidden="true">' + (g.m + 1) + (multi ? "." + (g.g + 1) : "") + "</span>" +
+        '<span aria-hidden="true">vs ' + (g.opp ? pips(g.opp) : "?") + " · " + (g.play ? "play" : "draw") + " · " + g.turns + "t</span>";
+      return "<li>" + (g.replay
+        ? '<a class="game' + (g.won ? " won" : "") + '" href="' + L17 + "/history/" + esc(d.id) + "/" + g.m + "/" + g.g + '" target="_blank" rel="noopener" title="Watch on 17Lands: ' + esc(label) + '" aria-label="Replay on 17Lands: ' + esc(label) + '">' + body + '<span class="ext" aria-hidden="true">↗</span></a>'
+        : '<span class="game' + (g.won ? " won" : "") + '" title="' + esc(label) + ' (no replay)">' + body + "</span>") + "</li>";
+    }).join("") + "</ol></div>";
+  }
+
   function panel(k) {
     const d = data.drafts[k];
     const f = facts(d);
@@ -157,8 +184,9 @@ select:focus-visible { outline: 2px solid var(--here); outline-offset: 2px; }
       (open && sideN ? '<h3 class="side-h">Sideboard</h3>' + deckHtml(d.side) : "") +
       '<div class="deck-foot">' +
       (d.picks && d.picks.length ? '<a class="btn primary" href="follow.html?d=' + k + '">▶ Replay the draft</a>' : "") +
+      (d.id ? '<a class="btn" href="' + L17 + "/deck/" + esc(d.id) + "/" + (d.deck_index || 0) + '" target="_blank" rel="noopener">Deck on 17Lands ↗</a>' : "") +
       (sideN ? '<button type="button" class="btn side" aria-expanded="' + open + '">' + (open ? "Hide" : "Show") + " sideboard (" + sideN + ")</button>" : "") +
-      '<span class="meta">' + (d.picks ? d.picks.length + " picks" : "") + "</span></div></article>";
+      '<span class="meta">' + (d.picks ? d.picks.length + " picks" : "") + "</span></div>" + gamesHtml(d) + "</article>";
   }
 
   function syncUrl() {

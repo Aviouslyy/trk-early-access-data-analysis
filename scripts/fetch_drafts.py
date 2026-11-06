@@ -1,10 +1,13 @@
 """One-shot fetch of pick-by-pick data and decklists for TRK Premier Draft trophy decks.
 
-Writes docs/data/drafts.json. Draft ids, screen names and ranks are not saved; each draft is kept only
-as its colours, record, picks and deck. Cards are stored once and referenced by index.
-Two requests per draft (picks and deck) with a pause between them. Please don't schedule this.
+Writes docs/data/drafts.json. Screen names and ranks are not saved. Each draft keeps its 17Lands draft id
+(so the site can link to the deck, draft and game replays on 17Lands), colours, record, picks, deck and a
+summary of each game. Cards are stored once and referenced by index.
+Three requests per draft (picks, deck, games) with a pause between them. Please don't schedule this.
 
 Decks come from the 17Lands deck page (main deck and sideboard of the deck the run ended with).
+Games come from the 17Lands event details: per game the match and game number, result, play/draw, turns,
+opponent colours and whether 17Lands has a replay. A replay is at /history/<draft id>/<match>/<game>.
 
 Rarity comes from Scryfall (https://scryfall.com), looked up by the card id in each image URL.
 
@@ -41,6 +44,17 @@ def add_rarity(cards):
         time.sleep(0.2)
 
 
+def games_of(details):
+    """One row per game: match and game index (as in the 17Lands replay URL), result, play/draw, turns, opponent colours."""
+    games = []
+    for m, match in enumerate(details.get("match_results") or []):
+        for g, game in enumerate(match.get("game_results") or []):
+            games.append({"m": m, "g": g, "won": bool(game.get("won")), "play": bool(game.get("on_play")),
+                          "turns": round((game.get("total_turns") or 0) / 2), "opp": game.get("opponent_colors") or "",
+                          "replay": bool(game.get("game_history_id") or game.get("history_s3_path"))})
+    return games
+
+
 def main():
     trophies = get_json(f"{BASE}/api/trophies/", {"expansion": EXPANSION, "event_type": "PremierDraft",
                                                   "card_names": [], "ranks": [], "deck_colors": []})["data"]
@@ -59,6 +73,8 @@ def main():
             d = get_json(f"{BASE}/data/draft?draft_id={t['aggregate_id']}")
             time.sleep(2)
             deck = get_json(f"{BASE}/api/deck/draft/?draft_id={t['aggregate_id']}&deck_index={t.get('deck_index') or 0}")["data"]
+            time.sleep(2)
+            details = get_json(f"{BASE}/data/details?draft_id={t['aggregate_id']}")
         except Exception as e:  # skip a draft that fails rather than lose the rest
             print("skipped a draft:", e)
             continue
@@ -78,14 +94,17 @@ def main():
                 cards[k].setdefault("types", " ".join(c.get("types") or []))
                 counts[k] = counts.get(k, 0) + 1
             groups[g["name"]] = [[k, n] for k, n in counts.items()]
-        drafts.append({"colors": t["colors"], "record": f'{t["wins"]}-{t["losses"]}', "time": t["time"],
-                       "picks": picks, "main": groups.get("Maindeck", []), "side": groups.get("Sideboard", [])})
+        drafts.append({"id": t["aggregate_id"], "deck_index": t.get("deck_index") or 0,
+                       "colors": t["colors"], "record": f'{t["wins"]}-{t["losses"]}', "time": t["time"],
+                       "picks": picks, "main": groups.get("Maindeck", []), "side": groups.get("Sideboard", []),
+                       "games": games_of(details)})
     add_rarity(cards)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({"expansion": EXPANSION, "cards": cards, "drafts": drafts}, separators=(",", ":")))
     print("wrote", OUT, len(drafts), "drafts,", len(cards), "cards")
     for d in drafts:
-        print(d["colors"], d["record"], sum(n for _, n in d["main"]), "main,", sum(n for _, n in d["side"]), "side")
+        print(d["colors"], d["record"], sum(n for _, n in d["main"]), "main,", sum(n for _, n in d["side"]), "side,",
+              sum(g["replay"] for g in d["games"]), "of", len(d["games"]), "games with replays")
 
 if __name__ == "__main__":
     main()
