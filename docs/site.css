@@ -20,6 +20,7 @@
   --hue-stats: #f0a030;
   --hue-cards: #8d97f5;
   --hue-follow: #c77cc3;
+  --hue-decks: #2fae9e;
   --pip-W: #f3ead0; --pip-W-ink: #5b4d1f;
   --pip-U: #2a78d6; --pip-U-ink: #fff;
   --pip-B: #2d2b29; --pip-B-ink: #fff;
@@ -35,7 +36,7 @@
     --text-primary: #eef0fb; --text-secondary: #b8bdd8; --text-muted: #8a90b0;
     --series-1: #f5a742; --series-1-soft: #7a5a2c; --track: #1f2440; --accent-ink: #a8b4ff;
     --tip-bg: #eef0fb; --tip-fg: #0d1020; --good: #3fb35c; --bad: #e86160;
-    --hue-stats: #f5a742; --hue-cards: #9ea8ff; --hue-follow: #d48bd0;
+    --hue-stats: #f5a742; --hue-cards: #9ea8ff; --hue-follow: #d48bd0; --hue-decks: #4cc7b6;
     --pip-B: #4a4744; --pip-C: #5a5853; --pip-C-ink: #f0efec;
   }
 }
@@ -45,12 +46,13 @@
   --text-primary: #eef0fb; --text-secondary: #b8bdd8; --text-muted: #8a90b0;
   --series-1: #f5a742; --series-1-soft: #7a5a2c; --track: #1f2440; --accent-ink: #a8b4ff;
   --tip-bg: #eef0fb; --tip-fg: #0d1020; --good: #3fb35c; --bad: #e86160;
-  --hue-stats: #f5a742; --hue-cards: #9ea8ff; --hue-follow: #d48bd0;
+  --hue-stats: #f5a742; --hue-cards: #9ea8ff; --hue-follow: #d48bd0; --hue-decks: #4cc7b6;
   --pip-B: #4a4744; --pip-C: #5a5853; --pip-C-ink: #f0efec;
 }
 body.p-stats { --here: var(--hue-stats); }
 body.p-cards { --here: var(--hue-cards); }
 body.p-follow { --here: var(--hue-follow); }
+body.p-decks { --here: var(--hue-decks); }
 
 * { box-sizing: border-box; }
 body {
@@ -85,7 +87,7 @@ h2 { font-family: var(--display); font-weight: 600; letter-spacing: .01em; }
 .bridge .site { font: 600 22px/1 var(--display); color: inherit; text-decoration: none; letter-spacing: .02em; }
 .bridge .bar span { margin-left: auto; font-size: 13px; opacity: .85; }
 .bridge nav {
-  grid-row: 2; grid-column: 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  grid-row: 2; grid-column: 2; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
   padding: 14px 0 0 calc(var(--bend) + 10px);
 }
 .bridge nav a {
@@ -97,12 +99,16 @@ h2 { font-family: var(--display); font-weight: 600; letter-spacing: .01em; }
 }
 .bridge nav a[href="cards.html"] { --hue: var(--hue-cards); }
 .bridge nav a[href="follow.html"] { --hue: var(--hue-follow); }
+.bridge nav a[href="decks.html"] { --hue: var(--hue-decks); }
 .bridge nav a b { font: 600 20px/1.15 var(--display); letter-spacing: .02em; }
 .bridge nav a span { font-size: 13px; color: var(--text-secondary); }
 .bridge nav a:hover { background: color-mix(in srgb, var(--hue) 34%, var(--surface-1)); }
 .bridge nav a[aria-current="page"] { background: var(--hue); color: var(--on-accent); }
 .bridge nav a[aria-current="page"] span { color: var(--on-accent); opacity: .8; }
 .bridge nav a:focus-visible { outline: 3px solid var(--text-primary); outline-offset: 2px; }
+@media (max-width: 960px) {
+  .bridge nav { grid-template-columns: repeat(2, 1fr); }
+}
 @media (max-width: 640px) {
   .bridge { --rail: 18px; --bend: 18px; }
   .bridge .elbow { border-radius: 18px 0 0 12px; }

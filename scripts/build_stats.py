@@ -85,6 +85,14 @@ def curve_stats(drafts):
     }
 
 
+def decklist_counts(drafts):
+    """How many decklists the trophy deck gallery has, by main colours and by record, so pages can link to it."""
+    ds = drafts["drafts"]
+    by_main = Counter(order(c for c in d["colors"] if c.isupper()) for d in ds)
+    return {"count": len(ds), "by_main": dict(by_main.most_common()),
+            "by_record": dict(Counter(d["record"] for d in ds))}
+
+
 def leaderboard_stats(players):
     wr = [p["win_rate"] for p in players if p["win_rate"] is not None]
     wins = [p["wins"] or 0 for p in players]
@@ -111,7 +119,9 @@ def main():
                                "leaderboard": leaderboard_stats(v["leaderboard_players"])}
     drafts_path = ROOT / "docs" / "data" / "drafts.json"
     if drafts_path.exists() and "PremierDraft" in out["formats"]:
-        out["formats"]["PremierDraft"]["curve"] = curve_stats(json.loads(drafts_path.read_text()))
+        drafts = json.loads(drafts_path.read_text())
+        out["formats"]["PremierDraft"]["curve"] = curve_stats(drafts)
+        out["formats"]["PremierDraft"]["decklists"] = decklist_counts(drafts)
     dest = ROOT / "docs" / "data" / "stats.json"
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(json.dumps(out, indent=1))
