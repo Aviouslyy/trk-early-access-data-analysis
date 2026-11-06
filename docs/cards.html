@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Trophy Card Picks</title>
-<meta name="description" content="Which Star Trek (TRK) cards 17Lands Premier Draft trophy drafters took most often, how early, and how often they took them when seen.">
+<title>Trophy Deck Cards</title>
+<meta name="description" content="Which Star Trek (TRK) cards made the main deck of 17Lands Premier Draft trophy decks, how many copies, and how early they were picked.">
 <meta name="robots" content="noindex">
 <style>
 :root {
@@ -72,13 +72,26 @@ tr.row.open td { background: var(--grid); border-bottom-color: transparent; }
 .name button[aria-expanded="true"]::after { content: " ▾"; }
 .name button:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
 td.detail { background: var(--grid); white-space: normal; padding: 4px 10px 14px; }
-.detail-body { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
-.detail-body > img { width: 180px; border-radius: 9px; flex: none; }
-.detail-body h3 { font-size: 14px; margin: 0 0 8px; }
-.detail-body ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.detail-body li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; }
-.detail-body .muted { color: var(--text-muted); }
 .pip.lc { min-width: 13px; height: 13px; font-size: 8px; opacity: .8; }
+.detail-inner { position: sticky; left: 10px; max-width: min(1000px, calc(100vw - 56px)); }
+.deck-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.deck-head h3 { font-size: 14px; margin: 0 8px 0 0; }
+.deck-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.deck-tabs button { font: inherit; font-size: 13px; display: inline-flex; gap: 6px; align-items: center; min-height: 32px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-1); color: var(--text-secondary); cursor: pointer; }
+.deck-tabs button[aria-selected="true"] { border-color: var(--series-1); box-shadow: inset 0 0 0 1px var(--series-1); color: var(--text-primary); }
+.deck-tabs button:focus-visible, .deck-toggle:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+.deck-scroll { overflow-x: auto; padding-bottom: 6px; }
+.deck { display: flex; gap: 8px; align-items: flex-start; }
+.deck-col { flex: none; width: 112px; }
+.deck-col > b { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+.deck-card { position: relative; display: block; }
+.deck-card + .deck-card { margin-top: -122px; }
+.deck-card img { display: block; width: 112px; aspect-ratio: 488 / 680; border-radius: 6px; background: var(--grid); box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.deck-card.hit img { outline: 3px solid var(--series-1); outline-offset: -1px; }
+.deck-card .x { position: absolute; top: 16px; right: 4px; background: rgba(0,0,0,.75); color: #fff; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 0 4px; }
+.deck-card:hover { z-index: 2; }
+.deck-foot { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 8px; font-size: 13px; }
+.deck-toggle { font: inherit; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-1); color: var(--accent-ink); padding: 4px 10px; min-height: 32px; cursor: pointer; }
 #preview { position: fixed; pointer-events: none; z-index: 10; width: 220px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.35); display: none; }
 .empty { color: var(--text-muted); padding: 12px; }
 footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
@@ -87,11 +100,11 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
 <body>
 <div class="wrap">
   <p><a href="./">← Back to the trophy stats</a> · <a href="follow.html">Follow a trophy draft</a></p>
-  <h1>Cards trophy drafters took</h1>
-  <p class="sub">Every card picked in the Premier Draft trophy drafts we have pick data for, ranked by how many of those drafters took it. Rarity is from <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a>.</p>
+  <h1>Cards in trophy decks</h1>
+  <p class="sub">Every card that made the main deck of a Premier Draft trophy deck, ranked by how many of those decks played it. Decklists and picks are from <a href="https://www.17lands.com/trophy_decks" target="_blank" rel="noopener">17Lands trophy decks</a>; rarity is from <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a>. Open a card to see the decks that played it.</p>
   <div class="note">
-    <strong>Picked, not played.</strong> 17Lands only shares decklists with subscribers, so this counts the cards each trophy drafter <em>drafted</em>. Some will have sat in the sideboard.
-    Rare cards show up less often simply because there are fewer of them, so look at <em>take rate</em> to see how highly drafters rated a card when they had the chance. The sample is small (<span id="n">–</span> drafts), so treat it as directional.
+    <strong>Main deck only.</strong> Copies in the sideboard don't count. <em>Played</em> is the share of drafted copies that made the main deck.
+    Rare cards show up less often simply because there are fewer of them, so look at <em>take rate</em> to see how highly drafters rated a card when they had the chance. The sample is small (<span id="n">–</span> decks), so treat it as directional.
   </div>
 
   <div class="controls">
@@ -123,13 +136,14 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
           <th>Card</th>
           <th>Cost</th>
           <th>Rarity</th>
-          <th class="num" data-k="drafts" title="Trophy drafters who took at least one copy"><button type="button">Trophy drafts</button></th>
-          <th class="num" data-k="copies" title="Total copies taken across trophy drafts"><button type="button">Copies</button></th>
+          <th class="num" data-k="decks" title="Trophy decks with at least one copy in the main deck"><button type="button">Trophy decks</button></th>
+          <th class="num" data-k="copies" title="Total main-deck copies across trophy decks"><button type="button">Copies</button></th>
+          <th class="num" data-k="playRate" title="Main-deck copies ÷ copies drafted"><button type="button">Played</button></th>
           <th class="num" data-k="avgPick" title="Average pick within the pack when taken (1 = first pick)"><button type="button">Avg pick</button></th>
           <th class="num" data-k="seen" title="Times the card was in a pack a trophy drafter picked from"><button type="button">Seen</button></th>
           <th class="num" data-k="takeRate" title="Copies taken ÷ times seen"><button type="button">Take rate</button></th>
         </tr></thead>
-        <tbody id="rows"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody>
+        <tbody id="rows"><tr><td colspan="9" class="empty">Loading…</td></tr></tbody>
       </table>
     </div>
   </section>
@@ -158,43 +172,70 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
   }).join("") + "</span>";
 
   const BASICS = new Set(["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"]);
-  let data, open = null, rows = [], sortKey = "drafts", sortDir = -1, colour = "", rarity = "", q = "";
+  let data, open = null, rows = [], sortKey = "decks", sortDir = -1, colour = "", rarity = "", q = "";
 
   function build(data) {
-    const stats = data.cards.map((c, i) => ({ ...c, idx: i, cols: colours(c.cost), drafts: 0, copies: 0, pickSum: 0, seen: 0, by: new Map() }));
+    const stats = data.cards.map((c, i) => ({ ...c, idx: i, cols: colours(c.cost), decks: 0, copies: 0, drafted: 0, pickSum: 0, seen: 0, inDecks: [] }));
     data.drafts.forEach((d, k) => {
-      const took = new Set();
       for (const p of d.picks) {
         for (const c of new Set(p.available)) stats[c].seen++;
         const s = stats[p.picked];
-        s.copies++; s.pickSum += p.pick + 1; took.add(p.picked);
-        if (!s.by.has(k)) s.by.set(k, []);
-        s.by.get(k).push("P" + (p.pack + 1) + "p" + (p.pick + 1));
+        s.drafted++; s.pickSum += p.pick + 1;
       }
-      took.forEach((c) => stats[c].drafts++);
+      for (const [c, n] of d.main) { stats[c].decks++; stats[c].copies += n; stats[c].inDecks.push(k); }
     });
-    // basics only get taken as last picks, so they would just be noise at the top
-    return stats.filter((s) => s.copies && !BASICS.has(s.name)).map((s) => ({ ...s, avgPick: s.pickSum / s.copies, takeRate: s.copies / s.seen }));
+    // basics are in every deck, so they would just be noise at the top
+    return stats.filter((s) => s.copies && s.drafted && !BASICS.has(s.name)).map((s) => ({
+      ...s, avgPick: s.pickSum / s.drafted, takeRate: s.drafted / s.seen, playRate: Math.min(1, s.copies / s.drafted),
+    }));
   }
 
+  const isLand = (c) => /\bLand\b/.test(c.types || "") || (!c.cost && c.cmc === 0 && BASICS.has(c.name));
+  function deckHtml(list, hit) {
+    const cols = new Map();
+    for (const [i, n] of list) {
+      const c = data.cards[i];
+      const key = isLand(c) ? "Lands" : Math.min(6, Math.round(c.cmc || 0));
+      if (!cols.has(key)) cols.set(key, []);
+      cols.get(key).push([c, n, i]);
+    }
+    const keys = [...cols.keys()].sort((a, b) => (a === "Lands") - (b === "Lands") || a - b);
+    return '<div class="deck-scroll"><div class="deck">' + keys.map((key) => {
+      const cs = cols.get(key).sort((a, b) => a[0].name.localeCompare(b[0].name));
+      const count = cs.reduce((s, x) => s + x[1], 0);
+      const label = key === "Lands" ? "Lands" : key === 6 ? "6+" : String(key);
+      return '<div class="deck-col"><b>' + label + " · " + count + "</b>" + cs.map(([c, n, i]) =>
+        '<span class="deck-card' + (i === hit ? " hit" : "") + '"><img src="' + esc(c.img) + '" alt="' + esc((n > 1 ? n + " × " : "") + c.name) + '" loading="lazy" data-full="' + esc(c.img) + '">' +
+        (n > 1 ? '<span class="x" aria-hidden="true">×' + n + "</span>" : "") + "</span>").join("") + "</div>";
+    }).join("") + "</div></div>";
+  }
+
+  let deckPick = 0, showSide = false;
   function detail(r) {
-    const items = [...r.by].map(([k, picks]) => {
-      const d = data.drafts[k];
-      return "<li>" + deckPips(d.colors) + " <strong>" + esc(d.record) + "</strong>" +
-        (d.start_rank ? ' <span class="muted">' + esc(d.start_rank) + "</span>" : "") +
-        "<span>Taken " + esc(picks.join(", ")) + "</span>" +
-        '<a href="follow.html?d=' + k + '">Follow this draft →</a></li>';
+    const ks = r.inDecks;
+    const k = ks[Math.min(deckPick, ks.length - 1)];
+    const d = data.drafts[k];
+    const copies = d.main.find(([c]) => c === r.idx)[1];
+    const sideN = d.side.reduce((s, x) => s + x[1], 0);
+    const tabs = ks.map((dk, j) => {
+      const x = data.drafts[dk];
+      return '<button type="button" role="tab" data-deck="' + j + '" aria-selected="' + (dk === k) + '">' + deckPips(x.colors) + " " + esc(x.record) + "</button>";
     }).join("");
-    return '<tr><td colspan="8" class="detail"><div class="detail-body"><img src="' + esc(r.img) + '" alt="' + esc(r.name) + '">' +
-      "<div><h3>Trophy drafts that took it (" + r.drafts + ")</h3><ul>" + items + "</ul>" +
-      '<p class="muted" style="font-size:12px;margin:8px 0 0">Drafted, not necessarily played. 17Lands keeps decklists for subscribers.</p></div></div></td></tr>';
+    return '<tr class="detail-row"><td colspan="9" class="detail"><div class="detail-inner">' +
+      '<div class="deck-head"><h3>Trophy decks playing it (' + ks.length + ")</h3>" +
+      '<div class="deck-tabs" role="tablist" aria-label="Trophy decks">' + tabs + "</div></div>" +
+      '<div role="tabpanel">' + deckHtml(d.main, r.idx) +
+      '<div class="deck-foot"><span>' + deckPips(d.colors) + " <strong>" + esc(d.record) + "</strong> · " + copies + " " + (copies === 1 ? "copy" : "copies") + " of " + esc(r.name) + "</span>" +
+      (sideN ? '<button type="button" class="deck-toggle" aria-expanded="' + showSide + '">' + (showSide ? "Hide" : "Show") + " sideboard (" + sideN + ")</button>" : "") + "</div>" +
+      (showSide && sideN ? '<h3 style="font-size:13px;margin:12px 0 6px;color:var(--text-secondary)">Sideboard</h3>' + deckHtml(d.side, r.idx) : "") +
+      "</div></div></td></tr>";
   }
 
   function render() {
     const shown = rows.filter((r) => (!q || r.name.toLowerCase().includes(q)) &&
       (!colour || (colour === "M" ? r.cols.length > 1 : colour === "C" ? !r.cols.length : r.cols.includes(colour))) &&
       (!rarity || r.rarity === rarity));
-    shown.sort((a, b) => (a[sortKey] - b[sortKey]) * sortDir || b.drafts - a.drafts || a.name.localeCompare(b.name));
+    shown.sort((a, b) => (a[sortKey] - b[sortKey]) * sortDir || b.decks - a.decks || a.name.localeCompare(b.name));
     document.querySelectorAll("th[data-k]").forEach((th) => {
       if (th.dataset.k === sortKey) th.setAttribute("aria-sort", sortDir < 0 ? "descending" : "ascending");
       else th.removeAttribute("aria-sort");
@@ -205,13 +246,14 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
       '<button type="button" aria-expanded="' + (open === r.idx) + '">' + esc(r.name) + "</button></div></td>" +
       "<td>" + costHtml(r.cost) + "</td>" +
       '<td style="text-transform:capitalize">' + esc(r.rarity || "–") + "</td>" +
-      '<td class="num">' + r.drafts + "</td>" +
+      '<td class="num">' + r.decks + "</td>" +
       '<td class="num">' + r.copies + "</td>" +
+      '<td class="num">' + Math.round(r.playRate * 100) + "%</td>" +
       '<td class="num">' + r.avgPick.toFixed(1) + "</td>" +
       '<td class="num">' + r.seen + "</td>" +
       '<td class="num">' + Math.round(r.takeRate * 100) + '%<span class="meter" aria-hidden="true"><i style="width:' + r.takeRate * 100 + '%"></i></span></td></tr>' +
       (open === r.idx ? detail(r) : "")
-    ).join("") : '<tr><td colspan="8" class="empty">No cards match.</td></tr>';
+    ).join("") : '<tr><td colspan="9" class="empty">No cards match.</td></tr>';
   }
 
   document.querySelectorAll("th[data-k] button").forEach((b) => b.addEventListener("click", () => {
@@ -222,10 +264,14 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
     render();
   }));
   $("rows").addEventListener("click", (e) => {
+    const tab = e.target.closest("[data-deck]");
+    if (tab) { deckPick = +tab.dataset.deck; render(); const t2 = $("rows").querySelector('[data-deck="' + deckPick + '"]'); if (t2) t2.focus(); return; }
+    if (e.target.closest(".deck-toggle")) { showSide = !showSide; render(); const b2 = $("rows").querySelector(".deck-toggle"); if (b2) b2.focus(); return; }
     const tr = e.target.closest("tr.row");
     if (!tr || e.target.closest("a")) return;
     const i = +tr.dataset.i;
     open = open === i ? null : i;
+    deckPick = 0; showSide = false;
     render();
     const btn = $("rows").querySelector('tr[data-i="' + i + '"] button');
     if (btn) btn.focus();
@@ -241,9 +287,12 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
 
   const preview = $("preview");
   $("rows").addEventListener("mouseover", (e) => {
-    const img = e.target.closest("tr") && e.target.closest("tr").querySelector("img[data-img]");
-    if (!img || e.target.closest("tr").classList.contains("open")) { preview.style.display = "none"; return; }
-    preview.src = img.dataset.img; preview.style.display = "block";
+    const tr = e.target.closest("tr");
+    const full = e.target.closest("img[data-full]");
+    const img = full ? null : tr && tr.classList.contains("row") && !tr.classList.contains("open") && tr.querySelector("img[data-img]");
+    const src = full ? full.dataset.full : img ? img.dataset.img : "";
+    if (!src) { preview.style.display = "none"; return; }
+    preview.src = src; preview.style.display = "block";
   });
   $("rows").addEventListener("mousemove", (e) => {
     const x = e.clientX + 240 > window.innerWidth ? e.clientX - 236 : e.clientX + 16;
@@ -257,7 +306,7 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
     $("n").textContent = d.drafts.length;
     rows = build(d);
     render();
-  }).catch(() => { $("rows").innerHTML = '<tr><td colspan="8" class="empty">Could not load data/drafts.json.</td></tr>'; });
+  }).catch(() => { $("rows").innerHTML = '<tr><td colspan="9" class="empty">Could not load data/drafts.json.</td></tr>'; });
 })();
 </script>
 </body>

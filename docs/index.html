@@ -193,11 +193,6 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
       <div class="vlabels" id="records-l"></div>
     </section>
 
-    <section class="card" id="rank-card">
-      <h2>Starting rank of trophy decks</h2>
-      <p class="desc">The player's ladder tier when the run started. Premier Draft only, since Sealed has no rank.</p>
-      <div class="bars" id="ranks"></div>
-    </section>
 
     <section class="card">
       <h2>Leaderboard win rates</h2>
@@ -344,14 +339,6 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
       label: r.record, v: r.count, tip: r.record + ": " + r.count + " trophies (" + pct(r.count, n) + ")",
     })));
 
-    const rankCard = $("rank-card");
-    if (t.start_tiers.length) {
-      rankCard.hidden = false;
-      hbars($("ranks"), t.start_tiers.map((r) => ({
-        labelHtml: esc(r.tier), total: r.count, parts: [{ v: r.count }],
-        tip: r.tier + ": " + r.count + " trophy decks (" + pct(r.count, n) + ")",
-      })));
-    } else rankCard.hidden = true;
 
     vbars($("wr"), $("wr-l"), lb.win_rate_hist.map((b) => ({
       label: b.label, v: b.count, tip: b.label + " win rate: " + b.count + " of " + lb.players + " listed players",

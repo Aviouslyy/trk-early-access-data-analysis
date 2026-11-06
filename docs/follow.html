@@ -86,15 +86,27 @@ button:disabled { opacity: .5; cursor: default; }
 .pip-B { background: var(--pip-B); color: var(--pip-B-ink); } .pip-R { background: var(--pip-R); color: var(--pip-R-ink); }
 .pip-G { background: var(--pip-G); color: var(--pip-G-ink); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.deck-wrap { margin-top: 4px; }
+.deck-wrap h3 { font-size: 14px; margin: 16px 0 8px; }
+.deck-wrap h3:first-child { margin-top: 0; }
+.deck-scroll { overflow-x: auto; padding-bottom: 6px; }
+.deck { display: flex; gap: 8px; align-items: flex-start; }
+.deck-col { flex: none; width: 112px; }
+.deck-col > b { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+.deck-card { position: relative; display: block; }
+.deck-card + .deck-card { margin-top: -122px; }
+.deck-card img { display: block; width: 112px; aspect-ratio: 488 / 680; border-radius: 6px; background: var(--grid); box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.deck-card .x { position: absolute; top: 16px; right: 4px; background: rgba(0,0,0,.75); color: #fff; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 0 4px; }
+.deck-card:hover { z-index: 2; }
 .hint { color: var(--text-muted); font-size: 13px; margin-top: 12px; }
 footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <p><a href="./">← Back to the trophy stats</a> · <a href="cards.html">Trophy card picks</a></p>
+  <p><a href="./">← Back to the trophy stats</a> · <a href="cards.html">Cards in trophy decks</a></p>
   <h1>Follow a trophy draft</h1>
-  <p class="sub">Pick from each pack a 17Lands Premier Draft trophy drafter saw, then see whether you took the same card. The deck's colours stay hidden until the end.</p>
+  <p class="sub">Pick from each pack a 17Lands Premier Draft trophy drafter saw, then see whether you took the same card. The deck's colours and the finished decklist stay hidden until the end.</p>
 
   <div class="controls">
     <label for="draft" class="sr">Draft</label>
@@ -111,6 +123,7 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
       </div>
       <div class="result" id="result"></div>
       <div class="pack" id="pack"></div>
+      <div class="deck-wrap" id="deck" hidden></div>
       <div class="controls" style="margin:14px 0 0">
         <button type="button" class="primary" id="next" hidden>Next pick</button>
       </div>
@@ -136,12 +149,32 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
     return '<span class="pip pip-' + up + (c !== up ? " lc" : "") + '">' + up + "</span>";
   }).join("") + "</span>";
 
-  let data, draft, i, mine, revealed;
+  let data, draft, i, mine, revealed, showSide = false;
+  const BASICS = new Set(["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"]);
+  const isLand = (c) => /\bLand\b/.test(c.types || "") || BASICS.has(c.name);
+  function deckHtml(list) {
+    const cols = new Map();
+    for (const [i, n] of list) {
+      const c = data.cards[i];
+      const key = isLand(c) ? "Lands" : Math.min(6, Math.round(c.cmc || 0));
+      if (!cols.has(key)) cols.set(key, []);
+      cols.get(key).push([c, n, i]);
+    }
+    const keys = [...cols.keys()].sort((a, b) => (a === "Lands") - (b === "Lands") || a - b);
+    return '<div class="deck-scroll"><div class="deck">' + keys.map((key) => {
+      const cs = cols.get(key).sort((a, b) => a[0].name.localeCompare(b[0].name));
+      const count = cs.reduce((s, x) => s + x[1], 0);
+      const label = key === "Lands" ? "Lands" : key === 6 ? "6+" : String(key);
+      return '<div class="deck-col"><b>' + label + " · " + count + "</b>" + cs.map(([c, n, i]) =>
+        '<span class="deck-card' + '" title="' + esc(c.name) + '"><img src="' + esc(c.img) + '" alt="' + esc((n > 1 ? n + " × " : "") + c.name) + '" loading="lazy">' +
+        (n > 1 ? '<span class="x" aria-hidden="true">×' + n + "</span>" : "") + "</span>").join("") + "</div>";
+    }).join("") + "</div></div>";
+  }
 
   function start(idx) {
     draft = data.drafts[idx];
     $("draft").value = idx;
-    i = 0; mine = []; revealed = false;
+    i = 0; mine = []; revealed = false; showSide = false;
     render();
   }
 
@@ -160,10 +193,17 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
       $("where").innerHTML = "Done. Their deck was " + pips(draft.colors) + " " + esc(draft.colors) + ", " + esc(draft.record);
       $("result").className = "result";
       $("result").textContent = "You matched " + matches + " of " + picks.length + " picks.";
+      $("pack").classList.remove("revealed");
       $("pack").innerHTML = "";
+      const sideN = (draft.side || []).reduce((s, x) => s + x[1], 0);
+      $("deck").hidden = !draft.main;
+      $("deck").innerHTML = draft.main ? "<h3>Their trophy deck</h3>" + deckHtml(draft.main) +
+        (sideN ? '<p style="margin:10px 0 0"><button type="button" id="side" aria-expanded="' + showSide + '">' + (showSide ? "Hide" : "Show") + " sideboard (" + sideN + ")</button></p>" : "") +
+        (showSide && sideN ? "<h3>Sideboard</h3>" + deckHtml(draft.side) : "") : "";
       $("next").hidden = true;
       return;
     }
+    $("deck").hidden = true;
     const p = picks[i];
     $("where").textContent = "Pack " + (p.pack + 1) + ", pick " + (p.pick + 1);
     const pack = $("pack");
@@ -186,6 +226,9 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
     if (revealed) $("next").focus();
   }
 
+  $("deck").addEventListener("click", (e) => {
+    if (e.target.closest("#side")) { showSide = !showSide; render(); $("side").focus(); }
+  });
   $("pack").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-c]");
     if (!b || revealed) return;
@@ -206,7 +249,7 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
     data = d;
     if (!data.drafts.length) { $("where").textContent = "No trophy drafts with pick data yet."; return; }
     $("draft").innerHTML = data.drafts.map((x, k) =>
-      '<option value="' + k + '">Trophy draft ' + (k + 1) + " · " + esc(x.record) + (x.start_rank ? " · " + esc(x.start_rank) : "") + "</option>").join("");
+      '<option value="' + k + '">Trophy draft ' + (k + 1) + " · " + esc(x.record) + "</option>").join("");
     const asked = parseInt(new URLSearchParams(location.search).get("d"), 10);
     start(asked >= 0 && asked < data.drafts.length ? asked : Math.floor(Math.random() * data.drafts.length));
   }).catch(() => { $("where").textContent = "Could not load data/drafts.json."; });

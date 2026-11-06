@@ -1,7 +1,7 @@
 """One-shot snapshot of 17Lands Star Trek (TRK) early-access results.
 
 Pulls the trophy-deck list and leaderboard for each format ONCE, strips anything
-that identifies an individual player or draft (screen names, aggregate ids), and
+that identifies an individual player or draft (screen names, aggregate ids, ranks), and
 writes data/snapshot.json. Not meant to be run on a schedule.
 
 Data source: 17Lands (https://www.17lands.com) - see trophy_decks and leaderboard pages.
@@ -39,9 +39,9 @@ def main():
         players = {}
         for lst in lb.values():
             for row in lst:
-                players[row["screen_name"]] = {k: row.get(k) for k in ("wins", "win_rate", "trophies", "trophy_rate", "rank")}
+                players[row["screen_name"]] = {k: row.get(k) for k in ("wins", "win_rate", "trophies", "trophy_rate")}
         snap["formats"][fmt] = {
-            "trophy_decks": [{k: d.get(k) for k in ("wins", "losses", "start_rank", "end_rank", "colors", "time")}
+            "trophy_decks": [{k: d.get(k) for k in ("wins", "losses", "colors", "time")}
                              for d in trophies],
             "leaderboard_players": sorted(players.values(), key=lambda p: (-(p["wins"] or 0), -(p["win_rate"] or 0))),
         }
