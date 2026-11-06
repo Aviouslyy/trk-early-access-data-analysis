@@ -54,6 +54,13 @@
 .vcol:hover { background: var(--grid); }
 .vcol .v { font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .vcol .b { width: 70%; max-width: 44px; background: var(--series-1); border-radius: 4px 4px 0 0; }
+.vcol .stack { width: 70%; max-width: 44px; display: flex; flex-direction: column; border-radius: 4px 4px 0 0; overflow: hidden; }
+.vcol .stack .b { width: 100%; max-width: none; border-radius: 0; }
+.vcol .stack .b.soft { background: var(--series-1-soft); }
+.mv-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.mv-head .value { font: 600 34px/1 var(--display); }
+.mv-head .note { color: var(--text-secondary); font-size: 13px; }
+.axis-note { color: var(--text-muted); font-size: 12px; text-align: center; margin-top: 2px; }
 .vlabels { display: flex; gap: 6px; margin-top: 6px; }
 .vlabels span { flex: 1; text-align: center; font-size: 12px; color: var(--text-secondary); }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -130,6 +137,18 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       <div class="vlabels" id="records-l"></div>
     </section>
 
+    <section class="card">
+      <h2>Mana value and curve</h2>
+      <p class="desc">Average mana value of the non-land cards in trophy main decks, and how many cards an average deck runs at each mana value.</p>
+      <div id="curve-body">
+        <div class="mv-head"><span class="value" id="mv-avg"></span><span class="note" id="mv-note"></span></div>
+        <div class="legend"><span style="--c:var(--series-1)">Creatures</span><span style="--c:var(--series-1-soft)">Other spells</span></div>
+        <div class="vbars" id="curve"></div>
+        <div class="vlabels" id="curve-l"></div>
+        <div class="axis-note">Mana value</div>
+      </div>
+      <div class="empty" id="curve-empty" hidden>Decklists are only collected for Premier Draft trophy decks. Switch to Premier Draft to see the curve.</div>
+    </section>
 
     <section class="card">
       <h2>Leaderboard win rates</h2>
@@ -229,6 +248,25 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       (note ? '<div class="note">' + note + "</div>" : "") + "</div>";
   }
 
+  function renderCurve(c) {
+    $("curve-body").hidden = !c;
+    $("curve-empty").hidden = !!c;
+    if (!c) return;
+    const r1 = (x) => x.toFixed(1);
+    $("mv-avg").textContent = c.avg_mv.toFixed(2);
+    $("mv-note").textContent = "average mana value · decks range " + c.min_mv.toFixed(2) + "–" + c.max_mv.toFixed(2) +
+      " · " + r1(c.avg_spells) + " spells and " + r1(c.avg_lands) + " lands on average, " + c.decks + " decklists";
+    const max = Math.max(1, ...c.curve.map((b) => b.creatures + b.other));
+    $("curve").innerHTML = c.curve.map((b) => {
+      const tot = b.creatures + b.other;
+      const tipText = "Mana value " + b.label + ": " + r1(tot) + " cards per deck (" + r1(b.creatures) + " creatures, " + r1(b.other) + " other)";
+      return '<div class="vcol" data-tip="' + esc(tipText) + '"><span class="v">' + r1(tot) + '</span><div class="stack" style="height:' +
+        (tot / max) * 82 + '%"><div class="b soft" style="flex:' + b.other + '"></div><div class="b" style="flex:' + b.creatures + '"></div></div></div>';
+    }).join("");
+    $("curve-l").innerHTML = c.curve.map((b) => "<span>" + esc(b.label) + "</span>").join("");
+    bindTips($("curve"));
+  }
+
   function render() {
     const f = stats.formats[fmt];
     if (!f) return;
@@ -275,7 +313,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     vbars($("records"), $("records-l"), t.records.map((r) => ({
       label: r.record, v: r.count, tip: r.record + ": " + r.count + " trophies (" + pct(r.count, n) + ")",
     })));
-
+    renderCurve(f.curve);
 
     vbars($("wr"), $("wr-l"), lb.win_rate_hist.map((b) => ({
       label: b.label, v: b.count, tip: b.label + " win rate: " + b.count + " of " + lb.players + " listed players",

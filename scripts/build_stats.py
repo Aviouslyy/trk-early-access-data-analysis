@@ -43,6 +43,48 @@ def deck_stats(decks):
     }
 
 
+CURVE_BUCKETS = ["0–1", "2", "3", "4", "5", "6", "7+"]
+
+
+def curve_stats(drafts):
+    """Average mana value and curve of non-land main-deck cards across trophy decklists."""
+    cards = drafts["cards"]
+    per_deck = []
+    for d in drafts["drafts"]:
+        creatures, other = [0] * len(CURVE_BUCKETS), [0] * len(CURVE_BUCKETS)
+        total_mv = spells = lands = 0
+        for k, n in d["main"]:
+            c = cards[k]
+            if "Land" in c["types"].split(" - ")[0]:
+                lands += n
+                continue
+            mv = c.get("cmc") or 0
+            b = min(max(int(mv), 1), 7) - 1
+            (creatures if "Creature" in c["types"].split(" - ")[0] else other)[b] += n
+            total_mv += mv * n
+            spells += n
+        if spells:
+            per_deck.append({"avg": total_mv / spells, "spells": spells, "lands": lands,
+                             "creatures": creatures, "other": other})
+    n = len(per_deck)
+    if not n:
+        return None
+    avgs = [d["avg"] for d in per_deck]
+    mean = lambda xs: round(sum(xs) / n, 2)
+    return {
+        "decks": n,
+        "avg_mv": round(sum(avgs) / n, 2),
+        "median_mv": round(median(avgs), 2),
+        "min_mv": round(min(avgs), 2),
+        "max_mv": round(max(avgs), 2),
+        "avg_spells": mean([d["spells"] for d in per_deck]),
+        "avg_lands": mean([d["lands"] for d in per_deck]),
+        "curve": [{"label": l, "creatures": mean([d["creatures"][i] for d in per_deck]),
+                   "other": mean([d["other"][i] for d in per_deck])}
+                  for i, l in enumerate(CURVE_BUCKETS)],
+    }
+
+
 def leaderboard_stats(players):
     wr = [p["win_rate"] for p in players if p["win_rate"] is not None]
     wins = [p["wins"] or 0 for p in players]
@@ -67,6 +109,9 @@ def main():
     for fmt, v in snap["formats"].items():
         out["formats"][fmt] = {"trophies": deck_stats(v["trophy_decks"]),
                                "leaderboard": leaderboard_stats(v["leaderboard_players"])}
+    drafts_path = ROOT / "docs" / "data" / "drafts.json"
+    if drafts_path.exists() and "PremierDraft" in out["formats"]:
+        out["formats"]["PremierDraft"]["curve"] = curve_stats(json.loads(drafts_path.read_text()))
     dest = ROOT / "docs" / "data" / "stats.json"
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(json.dumps(out, indent=1))

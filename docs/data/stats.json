@@ -250,6 +250,52 @@
       "count": 11
      }
     ]
+   },
+   "curve": {
+    "decks": 26,
+    "avg_mv": 2.96,
+    "median_mv": 3.02,
+    "min_mv": 2.32,
+    "max_mv": 3.78,
+    "avg_spells": 23.31,
+    "avg_lands": 16.69,
+    "curve": [
+     {
+      "label": "0\u20131",
+      "creatures": 1.38,
+      "other": 1.38
+     },
+     {
+      "label": "2",
+      "creatures": 4.23,
+      "other": 3.31
+     },
+     {
+      "label": "3",
+      "creatures": 3.77,
+      "other": 2.77
+     },
+     {
+      "label": "4",
+      "creatures": 2.12,
+      "other": 1.0
+     },
+     {
+      "label": "5",
+      "creatures": 1.46,
+      "other": 0.62
+     },
+     {
+      "label": "6",
+      "creatures": 0.73,
+      "other": 0.04
+     },
+     {
+      "label": "7+",
+      "creatures": 0.23,
+      "other": 0.27
+     }
+    ]
    }
   },
   "Sealed": {
