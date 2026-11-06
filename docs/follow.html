@@ -74,6 +74,7 @@ button:disabled { opacity: .5; cursor: default; }
     <div class="bar"><a class="site" href="index.html">TRK early access</a><span>Star Trek limited, from 17Lands trophy decks</span></div>
     <nav aria-label="Pages">
       <a href="index.html"><b>Trophy stats</b><span>What's winning, by colour</span></a>
+      <a href="decks.html"><b>Trophy decks</b><span>Every decklist, with replays</span></a>
       <a href="cards.html"><b>Card picks</b><span>Every card in a trophy deck</span></a>
       <a href="follow.html" aria-current="page"><b>Follow a draft</b><span>Pick along with a trophy drafter</span></a>
     </nav>
@@ -122,7 +123,7 @@ button:disabled { opacity: .5; cursor: default; }
     return '<span class="pip pip-' + up + (c !== up ? " lc" : "") + '">' + up + "</span>";
   }).join("") + "</span>";
 
-  let data, draft, i, mine, revealed, showSide = false;
+  let data, draft, draftIdx, i, mine, revealed, showSide = false;
   const BASICS = new Set(["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"]);
   const isLand = (c) => /\bLand\b/.test(c.types || "") || BASICS.has(c.name);
   function deckHtml(list) {
@@ -146,7 +147,10 @@ button:disabled { opacity: .5; cursor: default; }
 
   function start(idx) {
     draft = data.drafts[idx];
+    draftIdx = idx;
     $("draft").value = idx;
+    // keep the address on this draft so it can be shared or reopened
+    history.replaceState(null, "", location.pathname + "?d=" + idx);
     i = 0; mine = []; revealed = false; showSide = false;
     render();
   }
@@ -170,7 +174,7 @@ button:disabled { opacity: .5; cursor: default; }
       $("pack").innerHTML = "";
       const sideN = (draft.side || []).reduce((s, x) => s + x[1], 0);
       $("deck").hidden = !draft.main;
-      $("deck").innerHTML = draft.main ? "<h3>Their trophy deck</h3>" + deckHtml(draft.main) +
+      $("deck").innerHTML = draft.main ? '<h3>Their trophy deck · <a href="decks.html#deck-' + (draftIdx + 1) + '">see it in the deck gallery</a></h3>' + deckHtml(draft.main) +
         (sideN ? '<p style="margin:10px 0 0"><button type="button" id="side" aria-expanded="' + showSide + '">' + (showSide ? "Hide" : "Show") + " sideboard (" + sideN + ")</button></p>" : "") +
         (showSide && sideN ? "<h3>Sideboard</h3>" + deckHtml(draft.side) : "") : "";
       $("next").hidden = true;

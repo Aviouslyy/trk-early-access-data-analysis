@@ -12,9 +12,9 @@ early access event. It's shared with a small testing group.
 |---|---|
 | `scripts/fetch_snapshot.py` | One-off snapshot of TRK trophy decks and leaderboard totals for Premier Draft and Sealed. Player screen names, ranks and draft IDs are removed before saving. |
 | `data/snapshot.json` | The anonymised snapshot. |
-| `scripts/build_stats.py` | Turns the snapshot (and, for the mana curve, `docs/data/drafts.json`) into `docs/data/stats.json`. |
+| `scripts/build_stats.py` | Turns the snapshot (and, for the mana curve and gallery link counts, `docs/data/drafts.json`) into `docs/data/stats.json`. |
 | `scripts/fetch_drafts.py` | One-off fetch of pick-by-pick data and decklists (main deck and sideboard) for Premier Draft trophy decks, written to `docs/data/drafts.json` without draft IDs, screen names or ranks. Card rarity comes from [Scryfall](https://scryfall.com). |
-| `docs/` | The static site: `index.html`, `follow.html` (follow a trophy draft pick by pick and see how often you match), `cards.html` (cards in trophy main decks: decks, copies, share played, average pick, take rate; open a card to browse the decks that played it) and `data/`. |
+| `docs/` | The static site: `index.html`, `decks.html` (trophy deck gallery: every collected decklist with a link to replay its draft on the follow page; filter with `?colors=UR` / `?record=7-0`, link one deck with `#deck-N`), `follow.html` (follow a trophy draft pick by pick and see how often you match), `cards.html` (cards in trophy main decks: decks, copies, share played, average pick, take rate; open a card to browse the decks that played it) and `data/`. |
 
 ## Metrics on the site
 

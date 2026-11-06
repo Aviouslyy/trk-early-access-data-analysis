@@ -30,6 +30,10 @@
 .bars { display: flex; flex-direction: column; gap: 6px; }
 .bar-row { display: grid; grid-template-columns: minmax(96px, 150px) 1fr 44px; align-items: center; gap: 10px; padding: 2px 0; border-radius: 6px; }
 .bar-row:hover { background: var(--grid); }
+a.bar-row { color: inherit; text-decoration: none; }
+a.bar-row .bar-label { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 2px; }
+a.bar-row:focus-visible { outline: 2px solid var(--here); outline-offset: 2px; }
+.more { font-size: 13px; margin: 12px 0 0; }
 .bar-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .bar-track { position: relative; height: 18px; display: flex; gap: 2px; }
 .bar-fill { height: 100%; border-radius: 0 4px 4px 0; background: var(--series-1); min-width: 0; }
@@ -84,6 +88,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     <div class="bar"><a class="site" href="index.html">TRK early access</a><span>Star Trek limited, from 17Lands trophy decks</span></div>
     <nav aria-label="Pages">
       <a href="index.html" aria-current="page"><b>Trophy stats</b><span>What's winning, by colour</span></a>
+      <a href="decks.html"><b>Trophy decks</b><span>Every decklist, with replays</span></a>
       <a href="cards.html"><b>Card picks</b><span>Every card in a trophy deck</span></a>
       <a href="follow.html"><b>Follow a draft</b><span>Pick along with a trophy drafter</span></a>
     </nav>
@@ -113,6 +118,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       <h2>Trophy decks by colour pair</h2>
       <p class="desc">Two-colour trophy decks by their main colours. Splashes are ignored.</p>
       <div class="bars" id="pairs"></div>
+      <p class="more meta" id="pairs-more"></p>
     </section>
 
     <section class="card">
@@ -135,6 +141,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       <p class="desc">A trophy means 7 wins. The columns show how many losses those runs had along the way.</p>
       <div class="vbars" id="records"></div>
       <div class="vlabels" id="records-l"></div>
+      <p class="more" id="records-more"></p>
     </section>
 
     <section class="card">
@@ -146,6 +153,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
         <div class="vbars" id="curve"></div>
         <div class="vlabels" id="curve-l"></div>
         <div class="axis-note">Mana value</div>
+        <p class="more"><a href="decks.html">See every trophy decklist in the deck gallery</a></p>
       </div>
       <div class="empty" id="curve-empty" hidden>Decklists are only collected for Premier Draft trophy decks. Switch to Premier Draft to see the curve.</div>
     </section>
@@ -160,7 +168,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     <section class="card full">
       <h2>Every trophy archetype</h2>
       <p class="desc">Each main-colour combination that has won a trophy, including mono-colour and three-colour decks.</p>
-      <div class="table-scroll"><table id="arch"><thead><tr><th>Colours</th><th class="num">Trophy decks</th><th class="num">Share</th></tr></thead><tbody></tbody></table></div>
+      <div class="table-scroll"><table id="arch"><thead><tr><th>Colours</th><th class="num">Trophy decks</th><th class="num">Share</th><th id="arch-dl">Decklists</th></tr></thead><tbody></tbody></table></div>
     </section>
 
     <section class="card full">
@@ -228,8 +236,9 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       const fills = parts.map((p, i) =>
         '<div class="bar-fill' + (p.soft ? " soft" : "") + (i < parts.length - 1 ? " first-of-two" : "") +
         '" style="width:' + (p.v / max) * 100 + '%"></div>').join("");
-      return '<div class="bar-row" data-tip="' + esc(r.tip) + '"><div class="bar-label">' + r.labelHtml +
-        '</div><div class="bar-track">' + fills + '</div><div class="bar-val">' + r.total + "</div></div>";
+      const tag = r.href ? 'a href="' + esc(r.href) + '"' : "div";
+      return "<" + tag + ' class="bar-row" data-tip="' + esc(r.tip) + '"><div class="bar-label">' + r.labelHtml +
+        '</div><div class="bar-track">' + fills + '</div><div class="bar-val">' + r.total + "</div></" + tag.split(" ")[0] + ">";
     }).join("");
     bindTips(el);
   }
@@ -289,10 +298,16 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
       tile("Leaderboard median win rate", lb.median_win_rate != null ? Math.round(lb.median_win_rate * 100) + "%" : "–",
         lb.players + " players listed");
 
+    // decklists (and pick data) only exist for some Premier Draft trophies; link to the gallery where there are any
+    const dl = (f.decklists || {}).by_main || {};
+    const galleryHref = (q) => "decks.html?" + q;
     hbars($("pairs"), t.pairs.map((p) => ({
       labelHtml: pips(p.code) + " " + p.name, total: p.count, parts: [{ v: p.count }],
-      tip: p.name + " (" + p.code + "): " + p.count + " trophy deck" + (p.count === 1 ? "" : "s") + " · " + pct(p.count, n) + " of all trophies",
+      href: dl[p.code] ? galleryHref("colors=" + p.code) : "",
+      tip: p.name + " (" + p.code + "): " + p.count + " trophy deck" + (p.count === 1 ? "" : "s") + " · " + pct(p.count, n) + " of all trophies" +
+        (dl[p.code] ? " · click to see " + dl[p.code] + " decklist" + (dl[p.code] === 1 ? "" : "s") : ""),
     })));
+    $("pairs-more").innerHTML = f.decklists ? 'Linked pairs open their decklists in the <a href="decks.html">trophy deck gallery</a>.' : "";
 
     hbars($("presence"), t.presence.map((c) => ({
       labelHtml: pips(c.code) + " " + c.name, total: c.any,
@@ -313,6 +328,9 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     vbars($("records"), $("records-l"), t.records.map((r) => ({
       label: r.record, v: r.count, tip: r.record + ": " + r.count + " trophies (" + pct(r.count, n) + ")",
     })));
+    const byRec = (f.decklists || {}).by_record || {};
+    $("records-more").innerHTML = f.decklists ? "Decklists: " + t.records.filter((r) => byRec[r.record]).map((r) =>
+      '<a href="' + galleryHref("record=" + r.record) + '">' + r.record + " (" + byRec[r.record] + ")</a>").join(" · ") : "";
     renderCurve(f.curve);
 
     vbars($("wr"), $("wr-l"), lb.win_rate_hist.map((b) => ({
@@ -321,7 +339,10 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
     $("arch").querySelector("tbody").innerHTML = t.archetypes.map((a) =>
       "<tr><td>" + pips(a.code) + " " + esc(colourWords(a.code)) + ' <span style="color:var(--text-muted)">(' + a.code +
-      ')</span></td><td class="num">' + a.count + '</td><td class="num">' + pct(a.count, n) + "</td></tr>").join("");
+      ')</span></td><td class="num">' + a.count + '</td><td class="num">' + pct(a.count, n) + "</td>" +
+      (f.decklists ? "<td>" + (dl[a.code] ? '<a href="' + galleryHref("colors=" + a.code) + '">' + dl[a.code] + " deck" + (dl[a.code] === 1 ? "" : "s") + "</a>" : '<span class="meta">–</span>') + "</td>" : "") +
+      "</tr>").join("");
+    $("arch-dl").hidden = !f.decklists;
   }
 
   document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => {

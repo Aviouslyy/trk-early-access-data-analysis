@@ -74,6 +74,7 @@ td.detail { background: var(--grid); white-space: normal; padding: 4px 10px 14px
     <div class="bar"><a class="site" href="index.html">TRK early access</a><span>Star Trek limited, from 17Lands trophy decks</span></div>
     <nav aria-label="Pages">
       <a href="index.html"><b>Trophy stats</b><span>What's winning, by colour</span></a>
+      <a href="decks.html"><b>Trophy decks</b><span>Every decklist, with replays</span></a>
       <a href="cards.html" aria-current="page"><b>Card picks</b><span>Every card in a trophy deck</span></a>
       <a href="follow.html"><b>Follow a draft</b><span>Pick along with a trophy drafter</span></a>
     </nav>
@@ -204,6 +205,7 @@ td.detail { background: var(--grid); white-space: normal; padding: 4px 10px 14px
       '<div class="deck-tabs" role="tablist" aria-label="Trophy decks">' + tabs + "</div></div>" +
       '<div role="tabpanel">' + deckHtml(d.main, r.idx) +
       '<div class="deck-foot"><span>' + deckPips(d.colors) + " <strong>" + esc(d.record) + "</strong> · " + copies + " " + (copies === 1 ? "copy" : "copies") + " of " + esc(r.name) + "</span>" +
+      '<a href="decks.html#deck-' + (k + 1) + '">Open in deck gallery</a><a href="follow.html?d=' + k + '">Replay the draft</a>' +
       (sideN ? '<button type="button" class="deck-toggle" aria-expanded="' + showSide + '">' + (showSide ? "Hide" : "Show") + " sideboard (" + sideN + ")</button>" : "") + "</div>" +
       (showSide && sideN ? '<h3 style="font-size:13px;margin:12px 0 6px;color:var(--text-secondary)">Sideboard</h3>' + deckHtml(d.side, r.idx) : "") +
       "</div></div></td></tr>";

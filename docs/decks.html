@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trophy Deck Gallery</title>
+<meta name="description" content="Every Star Trek (TRK) Premier Draft trophy decklist collected from 17Lands, with a link to replay each draft pick by pick.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Antonio:wght@600&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="site.css">
+<style>
+.wrap { max-width: 1240px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+select { font: inherit; min-height: 36px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-1); color: var(--text-primary); padding: 6px 12px; }
+select:focus-visible { outline: 2px solid var(--here); outline-offset: 2px; }
+.decks { display: flex; flex-direction: column; gap: 16px; }
+.deck-panel { background: var(--surface-1); border: 1px solid var(--border); border-left: 6px solid var(--here); border-radius: 10px; padding: 14px 16px; min-width: 0; scroll-margin-top: 16px; }
+.deck-panel.target { box-shadow: 0 0 0 3px var(--here); }
+.deck-top { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; margin-bottom: 12px; }
+.deck-top h2 { font-size: 22px; margin: 0; display: flex; gap: 8px; align-items: center; }
+.deck-top h2 a { color: inherit; text-decoration: none; }
+.deck-top h2 a:hover { text-decoration: underline; }
+.rec { font: 600 15px/1 var(--display); letter-spacing: .03em; padding: 4px 8px; border-radius: 6px; background: color-mix(in srgb, var(--here) 22%, var(--surface-1)); }
+.rec.flawless { background: var(--here); color: var(--on-accent); }
+.facts { color: var(--text-secondary); font-size: 13px; font-variant-numeric: tabular-nums; }
+.when { color: var(--text-muted); font-size: 13px; margin-left: auto; }
+.pips { display: inline-flex; gap: 2px; vertical-align: -3px; }
+.pip { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 700; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+.pip.lc { width: 14px; height: 14px; font-size: 8px; opacity: .8; }
+.pip-W { background: var(--pip-W); color: var(--pip-W-ink); } .pip-U { background: var(--pip-U); color: var(--pip-U-ink); }
+.pip-B { background: var(--pip-B); color: var(--pip-B-ink); } .pip-R { background: var(--pip-R); color: var(--pip-R-ink); }
+.pip-G { background: var(--pip-G); color: var(--pip-G-ink); }
+.deck-scroll { overflow-x: auto; padding-bottom: 6px; }
+.deck { display: flex; gap: 8px; align-items: flex-start; }
+.deck-col { flex: none; width: 112px; }
+.deck-col > b { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+.deck-card { position: relative; display: block; }
+.deck-card + .deck-card { margin-top: -122px; }
+.deck-card img { display: block; width: 112px; aspect-ratio: 488 / 680; border-radius: 6px; background: var(--grid); box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.deck-card .x { position: absolute; top: 16px; right: 4px; background: rgba(0,0,0,.75); color: #fff; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 0 4px; }
+.deck-card:hover { z-index: 2; }
+.side-h { font-size: 13px; margin: 12px 0 6px; color: var(--text-secondary); }
+.deck-foot { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--grid); font-size: 14px; }
+.btn { font: inherit; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-1); color: var(--accent-ink); cursor: pointer; text-decoration: none; }
+.btn.primary { background: var(--hue-follow); border-color: var(--hue-follow); color: var(--on-accent); font-weight: 700; }
+.btn:hover { filter: brightness(1.05); text-decoration: underline; }
+.btn:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+.deck-foot .meta { margin-left: auto; }
+#preview { position: fixed; pointer-events: none; z-index: 10; width: 220px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.35); display: none; }
+.empty { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 16px; color: var(--text-secondary); }
+@media (max-width: 640px) { .when { margin-left: 0; width: 100%; } .deck-foot .meta { margin-left: 0; } }
+</style>
+</head>
+<body class="p-decks">
+<div class="wrap">
+  <header class="bridge">
+    <div class="elbow" aria-hidden="true"></div>
+    <div class="bar"><a class="site" href="index.html">TRK early access</a><span>Star Trek limited, from 17Lands trophy decks</span></div>
+    <nav aria-label="Pages">
+      <a href="index.html"><b>Trophy stats</b><span>What's winning, by colour</span></a>
+      <a href="decks.html" aria-current="page"><b>Trophy decks</b><span>Every decklist, with replays</span></a>
+      <a href="cards.html"><b>Card picks</b><span>Every card in a trophy deck</span></a>
+      <a href="follow.html"><b>Follow a draft</b><span>Pick along with a trophy drafter</span></a>
+    </nav>
+  </header>
+  <h1>Trophy deck gallery</h1>
+  <p class="sub">The main deck of every Premier Draft trophy run collected from <a href="https://www.17lands.com/trophy_decks" target="_blank" rel="noopener">17Lands trophy decks</a>, newest first. Under each deck, <em>Replay the draft</em> lets you pick along with that drafter, pack by pack, on the <a href="follow.html">follow-a-draft</a> page.</p>
+
+  <div class="controls">
+    <label for="colours" class="meta">Main colours</label>
+    <select id="colours"><option value="">All</option></select>
+    <div class="seg" role="group" aria-label="Record" id="records">
+      <button type="button" data-r="" aria-pressed="true">Any record</button>
+      <button type="button" data-r="7-0" aria-pressed="false">7–0</button>
+      <button type="button" data-r="7-1" aria-pressed="false">7–1</button>
+      <button type="button" data-r="7-2" aria-pressed="false">7–2</button>
+    </div>
+    <span class="meta" id="count"></span>
+  </div>
+
+  <div class="decks" id="decks"><div class="empty">Loading…</div></div>
+
+  <footer>
+    Decklists and picks from <a href="https://www.17lands.com" target="_blank" rel="noopener">17Lands</a> trophy decks, collected once. Only Premier Draft trophies that 17Lands had full pick data for are included, so this is a subset of all trophies. Draft ids and player names are left out. Card images are served by 17Lands. Magic: The Gathering is a trademark of Wizards of the Coast. Star Trek is a trademark of CBS Studios. This page isn't affiliated with any of them.
+  </footer>
+</div>
+<img id="preview" alt="">
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const WUBRG = "WUBRG";
+  const COLOR_NAMES = { W: "White", U: "Blue", B: "Black", R: "Red", G: "Green" };
+  const PAIR_NAMES = { WU: "Azorius", UB: "Dimir", BR: "Rakdos", RG: "Gruul", WG: "Selesnya", WB: "Orzhov", UR: "Izzet", BG: "Golgari", WR: "Boros", UG: "Simic" };
+  const order = (cs) => [...new Set(cs)].sort((a, b) => WUBRG.indexOf(a) - WUBRG.indexOf(b)).join("");
+  const mainOf = (code) => order([...code].filter((c) => c === c.toUpperCase()));
+  const pips = (code) => '<span class="pips" aria-hidden="true">' + [...code].map((c) => {
+    const up = c.toUpperCase();
+    return '<span class="pip pip-' + up + (c !== up ? " lc" : "") + '">' + up + "</span>";
+  }).join("") + "</span>";
+  function archetype(code) {
+    const main = mainOf(code);
+    const spl = [...code].filter((c) => c !== c.toUpperCase()).map((c) => COLOR_NAMES[c.toUpperCase()]);
+    const base = PAIR_NAMES[main] || (main.length === 1 ? "Mono " + COLOR_NAMES[main] : [...main].map((c) => COLOR_NAMES[c]).join("-"));
+    return base + (spl.length ? " splash " + spl.join(", ") : "");
+  }
+
+  const BASICS = new Set(["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"]);
+  const isLand = (c) => /\bLand\b/.test((c.types || "").split(" - ")[0]) || BASICS.has(c.name);
+  let data, colour = "", record = "";
+  const showSide = new Set();
+
+  function deckHtml(list) {
+    const cols = new Map();
+    for (const [i, n] of list) {
+      const c = data.cards[i];
+      const key = isLand(c) ? "Lands" : Math.min(6, Math.round(c.cmc || 0));
+      if (!cols.has(key)) cols.set(key, []);
+      cols.get(key).push([c, n]);
+    }
+    const keys = [...cols.keys()].sort((a, b) => (a === "Lands") - (b === "Lands") || a - b);
+    return '<div class="deck-scroll"><div class="deck">' + keys.map((key) => {
+      const cs = cols.get(key).sort((a, b) => a[0].name.localeCompare(b[0].name));
+      const count = cs.reduce((s, x) => s + x[1], 0);
+      const label = key === "Lands" ? "Lands" : key === 6 ? "6+" : String(key);
+      return '<div class="deck-col"><b>' + label + " · " + count + "</b>" + cs.map(([c, n]) =>
+        '<span class="deck-card" title="' + esc(c.name) + '"><img src="' + esc(c.img) + '" alt="' + esc((n > 1 ? n + " × " : "") + c.name) + '" loading="lazy" data-full="' + esc(c.img) + '">' +
+        (n > 1 ? '<span class="x" aria-hidden="true">×' + n + "</span>" : "") + "</span>").join("") + "</div>";
+    }).join("") + "</div></div>";
+  }
+
+  function facts(d) {
+    let spells = 0, mv = 0, creatures = 0, lands = 0;
+    for (const [i, n] of d.main) {
+      const c = data.cards[i];
+      if (isLand(c)) { lands += n; continue; }
+      spells += n; mv += (c.cmc || 0) * n;
+      if (/\bCreature\b/.test((c.types || "").split(" - ")[0])) creatures += n;
+    }
+    return { spells, lands, creatures, avg: spells ? mv / spells : 0 };
+  }
+
+  function panel(k) {
+    const d = data.drafts[k];
+    const f = facts(d);
+    const sideN = (d.side || []).reduce((s, x) => s + x[1], 0);
+    const open = showSide.has(k);
+    return '<article class="deck-panel" id="deck-' + (k + 1) + '" data-k="' + k + '">' +
+      '<div class="deck-top"><h2>' + pips(d.colors) + ' <a href="#deck-' + (k + 1) + '">' + esc(archetype(d.colors)) + "</a></h2>" +
+      '<span class="rec' + (d.record === "7-0" ? " flawless" : "") + '">' + esc(d.record) + "</span>" +
+      '<span class="facts">' + f.spells + " spells (" + f.creatures + " creatures) · " + f.lands + " lands · avg mana value " + f.avg.toFixed(2) + "</span>" +
+      '<span class="when">Trophy draft ' + (k + 1) + " · " + esc(d.time.slice(0, 16)) + " UTC</span></div>" +
+      deckHtml(d.main) +
+      (open && sideN ? '<h3 class="side-h">Sideboard</h3>' + deckHtml(d.side) : "") +
+      '<div class="deck-foot">' +
+      (d.picks && d.picks.length ? '<a class="btn primary" href="follow.html?d=' + k + '">▶ Replay the draft</a>' : "") +
+      (sideN ? '<button type="button" class="btn side" aria-expanded="' + open + '">' + (open ? "Hide" : "Show") + " sideboard (" + sideN + ")</button>" : "") +
+      '<span class="meta">' + (d.picks ? d.picks.length + " picks" : "") + "</span></div></article>";
+  }
+
+  function syncUrl() {
+    const p = new URLSearchParams();
+    if (colour) p.set("colors", colour);
+    if (record) p.set("record", record);
+    const qs = p.toString();
+    history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+  }
+
+  function render() {
+    $("colours").value = colour;
+    $("records").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.r === record));
+    const ks = data.drafts.map((_, k) => k).filter((k) => {
+      const d = data.drafts[k];
+      return (!colour || mainOf(d.colors) === colour) && (!record || d.record === record);
+    }).sort((a, b) => data.drafts[b].time.localeCompare(data.drafts[a].time));
+    $("count").textContent = ks.length + " of " + data.drafts.length + " decks";
+    $("decks").innerHTML = ks.length ? ks.map(panel).join("") :
+      '<div class="empty">No collected trophy decklists match. Decklists are only kept for Premier Draft trophies 17Lands had full pick data for, so some colour combinations on the stats page aren\'t here. <button type="button" class="btn" id="clear">Show all decks</button></div>';
+  }
+
+  function goToHash() {
+    const el = location.hash && document.getElementById(location.hash.slice(1));
+    document.querySelectorAll(".deck-panel.target").forEach((x) => x.classList.remove("target"));
+    if (el && el.classList.contains("deck-panel")) { el.classList.add("target"); el.scrollIntoView({ block: "start" }); }
+  }
+
+  $("colours").addEventListener("change", (e) => { colour = e.target.value; syncUrl(); render(); });
+  $("records").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    record = b.dataset.r; syncUrl(); render();
+  });
+  $("decks").addEventListener("click", (e) => {
+    if (e.target.closest("#clear")) { colour = ""; record = ""; syncUrl(); render(); return; }
+    const b = e.target.closest(".side");
+    if (!b) return;
+    const k = +b.closest(".deck-panel").dataset.k;
+    if (showSide.has(k)) showSide.delete(k); else showSide.add(k);
+    render();
+    const again = document.querySelector('.deck-panel[data-k="' + k + '"] .side');
+    if (again) again.focus();
+  });
+  window.addEventListener("hashchange", () => {
+    // a deck outside the current filter: clear the filter so it shows up
+    const m = /^#deck-(\d+)$/.exec(location.hash);
+    if (m && !document.getElementById(location.hash.slice(1))) { colour = ""; record = ""; syncUrl(); render(); }
+    goToHash();
+  });
+
+  const preview = $("preview");
+  $("decks").addEventListener("mouseover", (e) => {
+    const img = e.target.closest("img[data-full]");
+    if (!img) { preview.style.display = "none"; return; }
+    preview.src = img.dataset.full; preview.style.display = "block";
+  });
+  $("decks").addEventListener("mousemove", (e) => {
+    const x = e.clientX + 240 > window.innerWidth ? e.clientX - 236 : e.clientX + 16;
+    preview.style.left = x + "px";
+    preview.style.top = Math.max(8, Math.min(e.clientY - 40, window.innerHeight - 320)) + "px";
+  });
+  $("decks").addEventListener("mouseleave", () => { preview.style.display = "none"; });
+
+  fetch("data/drafts.json").then((r) => r.json()).then((d) => {
+    data = d;
+    if (!data.drafts.length) { $("decks").innerHTML = '<div class="empty">No trophy decklists yet.</div>'; return; }
+    const counts = {};
+    for (const x of data.drafts) { const m = mainOf(x.colors); counts[m] = (counts[m] || 0) + 1; }
+    const combos = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.length - b.length || a.localeCompare(b));
+    $("colours").innerHTML = '<option value="">All colours</option>' + combos.map((c) =>
+      '<option value="' + c + '">' + esc(archetype(c)) + " (" + c + ") · " + counts[c] + "</option>").join("");
+    const params = new URLSearchParams(location.search);
+    const askedC = params.get("colors") ? mainOf(params.get("colors").replace(/[^WUBRGwubrg]/g, "").toUpperCase()) : "";
+    colour = askedC;
+    if (askedC && !counts[askedC]) {
+      // keep the request visible even with no decks, so the empty message makes sense
+      $("colours").insertAdjacentHTML("beforeend", '<option value="' + askedC + '">' + esc(archetype(askedC)) + " (" + askedC + ") · 0</option>");
+    }
+    record = ["7-0", "7-1", "7-2"].includes(params.get("record")) ? params.get("record") : "";
+    // a deck link from another page wins over the filter if they disagree
+    const m = /^#deck-(\d+)$/.exec(location.hash);
+    if (m && data.drafts[m[1] - 1]) {
+      const d = data.drafts[m[1] - 1];
+      if ((colour && mainOf(d.colors) !== colour) || (record && d.record !== record)) { colour = ""; record = ""; syncUrl(); }
+    }
+    render();
+    goToHash();
+  }).catch(() => { $("decks").innerHTML = '<div class="empty">Could not load data/drafts.json.</div>'; });
+})();
+</script>
+</body>
+</html>
