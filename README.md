@@ -14,7 +14,7 @@ early access event. It's shared with a small testing group.
 | `data/snapshot.json` | The anonymised snapshot. |
 | `scripts/build_stats.py` | Turns the snapshot into `docs/data/stats.json`. |
 | `scripts/fetch_drafts.py` | One-off fetch of pick-by-pick data for Premier Draft trophy decks, written to `docs/data/drafts.json` without draft IDs. |
-| `docs/` | The static site: `index.html`, `follow.html` (follow a trophy draft pick by pick and see how often you match) and `data/`. |
+| `docs/` | The static site: `index.html`, `follow.html` (follow a trophy draft pick by pick and see how often you match), `cards.html` (cards trophy drafters took: copies, average pick, take rate when seen) and `data/`. |
 
 ## Metrics on the site
 

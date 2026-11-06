@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trophy Card Picks</title>
+<meta name="description" content="Which Star Trek (TRK) cards 17Lands Premier Draft trophy drafters took most often, how early, and how often they took them when seen.">
+<meta name="robots" content="noindex">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f3ef; --surface-1: #fcfcfb; --border: #e2e0da; --grid: #ecebe6;
+  --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77756f;
+  --series-1: #2a78d6; --series-1-soft: #a9c8ef; --accent-ink: #1d5fae;
+  --pip-W: #f3ead0; --pip-W-ink: #5b4d1f; --pip-U: #2a78d6; --pip-U-ink: #fff;
+  --pip-B: #2d2b29; --pip-B-ink: #fff; --pip-R: #d6403f; --pip-R-ink: #fff;
+  --pip-G: #1f8a3a; --pip-G-ink: #fff; --pip-C: #cfccc4; --pip-C-ink: #2d2b29;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211; --surface-1: #1a1a19; --border: #2e2d2b; --grid: #262624;
+    --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #9a998f;
+    --series-1: #3987e5; --series-1-soft: #2a4a72; --accent-ink: #8db8f0; --pip-B: #4a4744; --pip-C: #5a5853; --pip-C-ink: #f0efec;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface-1: #1a1a19; --border: #2e2d2b; --grid: #262624;
+  --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #9a998f;
+  --series-1: #3987e5; --series-1-soft: #2a4a72; --accent-ink: #8db8f0; --pip-B: #4a4744; --pip-C: #5a5853; --pip-C-ink: #f0efec;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text-primary); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--accent-ink); }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; }
+.sub { color: var(--text-secondary); margin: 0 0 16px; }
+.note { background: var(--surface-1); border: 1px solid var(--border); border-left: 4px solid var(--series-1); border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; color: var(--text-secondary); font-size: 14px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+input[type=search] { font: inherit; min-height: 36px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-1); color: var(--text-primary); padding: 6px 12px; width: min(100%, 280px); }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface-1); }
+.seg button { font: inherit; border: 0; background: transparent; color: var(--text-secondary); padding: 6px 10px; cursor: pointer; min-height: 36px; }
+.seg button[aria-pressed="true"] { background: var(--series-1); color: #fff; }
+:is(input, button):focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+.meta { color: var(--text-muted); font-size: 13px; }
+.panel { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 8px 0; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th { color: var(--text-secondary); font-weight: 600; }
+th button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+th[aria-sort] button { color: var(--text-primary); }
+th[aria-sort="descending"] button::after { content: " ↓"; }
+th[aria-sort="ascending"] button::after { content: " ↑"; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr:hover td { background: var(--grid); }
+.name { display: flex; align-items: center; gap: 8px; }
+.name img { width: 32px; height: 45px; border-radius: 3px; object-fit: cover; background: var(--grid); flex: none; }
+.name span { white-space: normal; min-width: 140px; }
+.meter { display: inline-block; width: 60px; height: 8px; background: var(--grid); border-radius: 4px; vertical-align: middle; margin-left: 6px; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--series-1); }
+.pips { display: inline-flex; gap: 2px; vertical-align: -3px; }
+.pip { display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 3px; border-radius: 8px; font-size: 10px; font-weight: 700; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+.pip-W { background: var(--pip-W); color: var(--pip-W-ink); } .pip-U { background: var(--pip-U); color: var(--pip-U-ink); }
+.pip-B { background: var(--pip-B); color: var(--pip-B-ink); } .pip-R { background: var(--pip-R); color: var(--pip-R-ink); }
+.pip-G { background: var(--pip-G); color: var(--pip-G-ink); } .pip-C { background: var(--pip-C); color: var(--pip-C-ink); }
+#preview { position: fixed; pointer-events: none; z-index: 10; width: 220px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.35); display: none; }
+.empty { color: var(--text-muted); padding: 12px; }
+footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a href="./">← Back to the trophy stats</a> · <a href="follow.html">Follow a trophy draft</a></p>
+  <h1>Cards trophy drafters took</h1>
+  <p class="sub">Every card picked in the Premier Draft trophy drafts we have pick data for, ranked by how many of those drafters took it.</p>
+  <div class="note">
+    <strong>Picked, not played.</strong> 17Lands only shares decklists with subscribers, so this counts the cards each trophy drafter <em>drafted</em>. Some will have sat in the sideboard.
+    Rare cards show up less often simply because there are fewer of them, so look at <em>take rate</em> to see how highly drafters rated a card when they had the chance. The sample is small (<span id="n">–</span> drafts), so treat it as directional.
+  </div>
+
+  <div class="controls">
+    <input type="search" id="q" placeholder="Search cards" aria-label="Search cards">
+    <div class="seg" role="group" aria-label="Colour" id="colours">
+      <button type="button" data-c="" aria-pressed="true">All</button>
+      <button type="button" data-c="W" aria-pressed="false">W</button>
+      <button type="button" data-c="U" aria-pressed="false">U</button>
+      <button type="button" data-c="B" aria-pressed="false">B</button>
+      <button type="button" data-c="R" aria-pressed="false">R</button>
+      <button type="button" data-c="G" aria-pressed="false">G</button>
+      <button type="button" data-c="M" aria-pressed="false" title="Multicolour">Multi</button>
+      <button type="button" data-c="C" aria-pressed="false" title="Colourless">C</button>
+    </div>
+    <span class="meta" id="count"></span>
+  </div>
+
+  <section class="panel">
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Card</th>
+          <th>Cost</th>
+          <th class="num" data-k="drafts" title="Trophy drafters who took at least one copy"><button type="button">Trophy drafts</button></th>
+          <th class="num" data-k="copies" title="Total copies taken across trophy drafts"><button type="button">Copies</button></th>
+          <th class="num" data-k="avgPick" title="Average pick within the pack when taken (1 = first pick)"><button type="button">Avg pick</button></th>
+          <th class="num" data-k="seen" title="Times the card was in a pack a trophy drafter picked from"><button type="button">Seen</button></th>
+          <th class="num" data-k="takeRate" title="Copies taken ÷ times seen"><button type="button">Take rate</button></th>
+        </tr></thead>
+        <tbody id="rows"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Draft data from <a href="https://www.17lands.com" target="_blank" rel="noopener">17Lands</a> trophy decks, collected once. Card images are served by 17Lands. Magic: The Gathering is a trademark of Wizards of the Coast. Star Trek is a trademark of CBS Studios. This page isn't affiliated with any of them.
+  </footer>
+</div>
+<img id="preview" alt="">
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const symbols = (cost) => (cost.match(/\{[^}]+\}/g) || []).map((s) => s.slice(1, -1));
+  const costHtml = (cost) => '<span class="pips">' + symbols(cost).map((s) => {
+    const cls = /^[WUBRG]$/.test(s) ? s : "C";
+    return '<span class="pip pip-' + cls + '">' + esc(s) + "</span>";
+  }).join("") + "</span>";
+  // ponytail: colour from mana cost only, so lands and colour-in-text-only cards count as colourless
+  const colours = (cost) => [...new Set(symbols(cost).join("").match(/[WUBRG]/g) || [])];
+
+  const BASICS = new Set(["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"]);
+  let rows = [], sortKey = "drafts", sortDir = -1, colour = "", q = "";
+
+  function build(data) {
+    const stats = data.cards.map((c) => ({ ...c, cols: colours(c.cost), drafts: 0, copies: 0, pickSum: 0, seen: 0 }));
+    for (const d of data.drafts) {
+      const took = new Set();
+      for (const p of d.picks) {
+        for (const c of new Set(p.available)) stats[c].seen++;
+        const s = stats[p.picked];
+        s.copies++; s.pickSum += p.pick + 1; took.add(p.picked);
+      }
+      took.forEach((c) => stats[c].drafts++);
+    }
+    // basics only get taken as last picks, so they would just be noise at the top
+    return stats.filter((s) => s.copies && !BASICS.has(s.name)).map((s) => ({ ...s, avgPick: s.pickSum / s.copies, takeRate: s.copies / s.seen }));
+  }
+
+  function render() {
+    const shown = rows.filter((r) => (!q || r.name.toLowerCase().includes(q)) &&
+      (!colour || (colour === "M" ? r.cols.length > 1 : colour === "C" ? !r.cols.length : r.cols.includes(colour))));
+    shown.sort((a, b) => (a[sortKey] - b[sortKey]) * sortDir || b.drafts - a.drafts || a.name.localeCompare(b.name));
+    document.querySelectorAll("th[data-k]").forEach((th) => {
+      if (th.dataset.k === sortKey) th.setAttribute("aria-sort", sortDir < 0 ? "descending" : "ascending");
+      else th.removeAttribute("aria-sort");
+    });
+    $("count").textContent = shown.length + " of " + rows.length + " cards";
+    $("rows").innerHTML = shown.length ? shown.map((r) =>
+      '<tr><td><div class="name"><img src="' + esc(r.img) + '" alt="" loading="lazy" data-img="' + esc(r.img) + '"><span>' + esc(r.name) + "</span></div></td>" +
+      "<td>" + costHtml(r.cost) + "</td>" +
+      '<td class="num">' + r.drafts + "</td>" +
+      '<td class="num">' + r.copies + "</td>" +
+      '<td class="num">' + r.avgPick.toFixed(1) + "</td>" +
+      '<td class="num">' + r.seen + "</td>" +
+      '<td class="num">' + Math.round(r.takeRate * 100) + '%<span class="meter" aria-hidden="true"><i style="width:' + r.takeRate * 100 + '%"></i></span></td></tr>'
+    ).join("") : '<tr><td colspan="7" class="empty">No cards match.</td></tr>';
+  }
+
+  document.querySelectorAll("th[data-k] button").forEach((b) => b.addEventListener("click", () => {
+    const k = b.parentElement.dataset.k;
+    // lower avg pick is better, so sort it ascending first
+    sortDir = k === sortKey ? -sortDir : k === "avgPick" ? 1 : -1;
+    sortKey = k;
+    render();
+  }));
+  $("q").addEventListener("input", (e) => { q = e.target.value.trim().toLowerCase(); render(); });
+  $("colours").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    colour = b.dataset.c;
+    document.querySelectorAll("#colours button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    render();
+  });
+
+  const preview = $("preview");
+  $("rows").addEventListener("mouseover", (e) => {
+    const img = e.target.closest("tr") && e.target.closest("tr").querySelector("img[data-img]");
+    if (!img) return;
+    preview.src = img.dataset.img; preview.style.display = "block";
+  });
+  $("rows").addEventListener("mousemove", (e) => {
+    const x = e.clientX + 240 > window.innerWidth ? e.clientX - 236 : e.clientX + 16;
+    preview.style.left = x + "px";
+    preview.style.top = Math.min(e.clientY - 40, window.innerHeight - 320) + "px";
+  });
+  $("rows").addEventListener("mouseleave", () => { preview.style.display = "none"; });
+
+  fetch("data/drafts.json").then((r) => r.json()).then((d) => {
+    $("n").textContent = d.drafts.length;
+    rows = build(d);
+    render();
+  }).catch(() => { $("rows").innerHTML = '<tr><td colspan="7" class="empty">Could not load data/drafts.json.</td></tr>'; });
+})();
+</script>
+</body>
+</html>

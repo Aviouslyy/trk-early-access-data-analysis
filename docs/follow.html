@@ -63,7 +63,7 @@ button:disabled { opacity: .5; cursor: default; }
 .result.bad { color: var(--bad); }
 .pack { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(140px, 45%), 1fr)); gap: 10px; }
 .pack button { padding: 0; border: 0; background: none; border-radius: 9px; position: relative; aspect-ratio: 488 / 680; overflow: hidden; }
-.pack img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 9px; background: var(--grid); }
+.pack img { position: relative; width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 9px; background: var(--grid); }
 .pack .alt { position: absolute; inset: 0; display: grid; place-items: center; padding: 8px; font-size: 13px; text-align: center; background: var(--grid); border-radius: 9px; }
 .pack button:hover:not(:disabled) img { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.25); }
 .pack button:disabled { opacity: 1; }
@@ -92,7 +92,7 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
 </head>
 <body>
 <div class="wrap">
-  <p><a href="./">← Back to the trophy stats</a></p>
+  <p><a href="./">← Back to the trophy stats</a> · <a href="cards.html">Trophy card picks</a></p>
   <h1>Follow a trophy draft</h1>
   <p class="sub">Pick from each pack a 17Lands Premier Draft trophy drafter saw, then see whether you took the same card. The deck's colours stay hidden until the end.</p>
 
