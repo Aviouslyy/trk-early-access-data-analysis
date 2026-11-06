@@ -209,28 +209,6 @@
       "main": 12,
       "any": 14
      }
-    ],
-    "start_tiers": [
-     {
-      "tier": "Bronze",
-      "count": 6
-     },
-     {
-      "tier": "Silver",
-      "count": 6
-     },
-     {
-      "tier": "Gold",
-      "count": 7
-     },
-     {
-      "tier": "Platinum",
-      "count": 9
-     },
-     {
-      "tier": "Diamond",
-      "count": 2
-     }
     ]
    },
    "leaderboard": {
@@ -270,28 +248,6 @@
      {
       "label": "70%+",
       "count": 11
-     }
-    ],
-    "rank_tiers": [
-     {
-      "tier": "Bronze",
-      "count": 21
-     },
-     {
-      "tier": "Silver",
-      "count": 9
-     },
-     {
-      "tier": "Gold",
-      "count": 25
-     },
-     {
-      "tier": "Platinum",
-      "count": 25
-     },
-     {
-      "tier": "Diamond",
-      "count": 2
      }
     ]
    }
@@ -479,8 +435,7 @@
       "main": 3,
       "any": 4
      }
-    ],
-    "start_tiers": []
+    ]
    },
    "leaderboard": {
     "players": 52,
@@ -520,8 +475,7 @@
       "label": "70%+",
       "count": 8
      }
-    ],
-    "rank_tiers": []
+    ]
    }
   }
  }

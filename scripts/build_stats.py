@@ -9,18 +9,10 @@ WUBRG = "WUBRG"
 COLOR_NAMES = {"W": "White", "U": "Blue", "B": "Black", "R": "Red", "G": "Green"}
 PAIR_NAMES = {"WU": "Azorius", "UB": "Dimir", "BR": "Rakdos", "RG": "Gruul", "WG": "Selesnya",
               "WB": "Orzhov", "UR": "Izzet", "BG": "Golgari", "WR": "Boros", "UG": "Simic"}
-TIERS = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Mythic"]
 
 
 def order(cs):
     return "".join(sorted(set(cs), key=WUBRG.index))
-
-
-def tier(rank):
-    if not rank:
-        return None
-    t = rank.replace("-", " ").split()[0]
-    return t if t in TIERS else None
 
 
 def deck_stats(decks):
@@ -34,7 +26,6 @@ def deck_stats(decks):
     presence_any = {c: sum(c in m or c in s for m, s in zip(main, splash)) for c in WUBRG}
     splash_colors = Counter(c for s in splash for c in s)
     records = Counter(f'{d["wins"]}-{d["losses"]}' for d in decks)
-    start_tiers = Counter(tier(d["start_rank"]) for d in decks if tier(d["start_rank"]))
     times = sorted(d["time"] for d in decks)
     return {
         "count": n,
@@ -49,7 +40,6 @@ def deck_stats(decks):
         "splash_decks": sum(bool(s) for s in splash),
         "splash_colors": [{"code": c, "name": COLOR_NAMES[c], "count": splash_colors.get(c, 0)} for c in WUBRG],
         "presence": [{"code": c, "name": COLOR_NAMES[c], "main": presence[c], "any": presence_any[c]} for c in WUBRG],
-        "start_tiers": [{"tier": t, "count": start_tiers.get(t, 0)} for t in TIERS if start_tiers.get(t)],
     }
 
 
@@ -58,7 +48,6 @@ def leaderboard_stats(players):
     wins = [p["wins"] or 0 for p in players]
     bins = [(0, .4), (.4, .5), (.5, .55), (.55, .6), (.6, .65), (.65, .7), (.7, 1.01)]
     labels = ["<40%", "40–50%", "50–55%", "55–60%", "60–65%", "65–70%", "70%+"]
-    tiers = Counter(tier(p["rank"]) for p in players if tier(p["rank"]))
     return {
         "players": len(players),
         "total_wins": sum(wins),
@@ -69,7 +58,6 @@ def leaderboard_stats(players):
         "median_win_rate": round(median(wr), 4) if wr else None,
         "max_win_rate": round(max(wr), 4) if wr else None,
         "win_rate_hist": [{"label": l, "count": sum(lo <= w < hi for w in wr)} for (lo, hi), l in zip(bins, labels)],
-        "rank_tiers": [{"tier": t, "count": tiers.get(t, 0)} for t in TIERS if tiers.get(t)],
     }
 
 
