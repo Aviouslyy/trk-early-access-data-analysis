@@ -147,7 +147,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
         <div class="vlabels" id="curve-l"></div>
         <div class="axis-note">Mana value</div>
       </div>
-      <div class="empty" id="curve-empty" hidden>Decklists are only collected for Premier Draft trophy decks. Switch to Premier Draft to see the curve.</div>
+      <div class="empty" id="curve-empty" hidden></div>
     </section>
 
     <section class="card">
@@ -251,7 +251,12 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   function renderCurve(c) {
     $("curve-body").hidden = !c;
     $("curve-empty").hidden = !!c;
-    if (!c) return;
+    if (!c) {
+      $("curve-empty").textContent = fmt === "PremierDraft"
+        ? "Curve data isn't in this copy of data/stats.json. Reload the page, or rerun scripts/build_stats.py."
+        : "Decklists are only collected for Premier Draft trophy decks. Switch to Premier Draft to see the curve.";
+      return;
+    }
     const r1 = (x) => x.toFixed(1);
     $("mv-avg").textContent = c.avg_mv.toFixed(2);
     $("mv-note").textContent = "average mana value · decks range " + c.min_mv.toFixed(2) + "–" + c.max_mv.toFixed(2) +
@@ -330,7 +335,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
     render();
   }));
 
-  fetch("data/stats.json").then((r) => r.json()).then((d) => {
+  fetch("data/stats.json", { cache: "no-cache" }).then((r) => r.json()).then((d) => {
     stats = d;
     if (!stats.formats[fmt]) fmt = "PremierDraft";
     render();

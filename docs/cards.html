@@ -279,7 +279,7 @@ td.detail { background: var(--grid); white-space: normal; padding: 4px 10px 14px
   });
   $("rows").addEventListener("mouseleave", () => { preview.style.display = "none"; });
 
-  fetch("data/drafts.json").then((r) => r.json()).then((d) => {
+  fetch("data/drafts.json", { cache: "no-cache" }).then((r) => r.json()).then((d) => {
     data = d;
     $("n").textContent = d.drafts.length;
     rows = build(d);

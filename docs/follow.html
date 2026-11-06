@@ -218,7 +218,7 @@ button:disabled { opacity: .5; cursor: default; }
   $("random").addEventListener("click", () => start(Math.floor(Math.random() * data.drafts.length)));
   $("restart").addEventListener("click", () => start(+$("draft").value));
 
-  fetch("data/drafts.json").then((r) => r.json()).then((d) => {
+  fetch("data/drafts.json", { cache: "no-cache" }).then((r) => r.json()).then((d) => {
     data = d;
     if (!data.drafts.length) { $("where").textContent = "No trophy drafts with pick data yet."; return; }
     $("draft").innerHTML = data.drafts.map((x, k) =>
