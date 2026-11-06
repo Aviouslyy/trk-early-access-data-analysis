@@ -13,7 +13,7 @@ early access event. It's shared with a small testing group.
 | `scripts/fetch_snapshot.py` | One-off snapshot of TRK trophy decks and leaderboard totals for Premier Draft and Sealed. Player screen names and draft IDs are removed before saving. |
 | `data/snapshot.json` | The anonymised snapshot. |
 | `scripts/build_stats.py` | Turns the snapshot into `docs/data/stats.json`. |
-| `scripts/fetch_drafts.py` | One-off fetch of pick-by-pick data for Premier Draft trophy decks, written to `docs/data/drafts.json` without draft IDs. |
+| `scripts/fetch_drafts.py` | One-off fetch of pick-by-pick data for Premier Draft trophy decks, written to `docs/data/drafts.json` without draft IDs. Card rarity comes from [Scryfall](https://scryfall.com). |
 | `docs/` | The static site: `index.html`, `follow.html` (follow a trophy draft pick by pick and see how often you match), `cards.html` (cards trophy drafters took: copies, average pick, take rate when seen) and `data/`. |
 
 ## Metrics on the site

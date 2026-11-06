@@ -65,6 +65,20 @@ tr:hover td { background: var(--grid); }
 .pip-W { background: var(--pip-W); color: var(--pip-W-ink); } .pip-U { background: var(--pip-U); color: var(--pip-U-ink); }
 .pip-B { background: var(--pip-B); color: var(--pip-B-ink); } .pip-R { background: var(--pip-R); color: var(--pip-R-ink); }
 .pip-G { background: var(--pip-G); color: var(--pip-G-ink); } .pip-C { background: var(--pip-C); color: var(--pip-C-ink); }
+tr.row { cursor: pointer; }
+tr.row.open td { background: var(--grid); border-bottom-color: transparent; }
+.name button { font: inherit; color: inherit; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; white-space: normal; min-width: 140px; }
+.name button::after { content: " ▸"; color: var(--text-muted); }
+.name button[aria-expanded="true"]::after { content: " ▾"; }
+.name button:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+td.detail { background: var(--grid); white-space: normal; padding: 4px 10px 14px; }
+.detail-body { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.detail-body > img { width: 180px; border-radius: 9px; flex: none; }
+.detail-body h3 { font-size: 14px; margin: 0 0 8px; }
+.detail-body ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.detail-body li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; }
+.detail-body .muted { color: var(--text-muted); }
+.pip.lc { min-width: 13px; height: 13px; font-size: 8px; opacity: .8; }
 #preview { position: fixed; pointer-events: none; z-index: 10; width: 220px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.35); display: none; }
 .empty { color: var(--text-muted); padding: 12px; }
 footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
@@ -74,7 +88,7 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
 <div class="wrap">
   <p><a href="./">← Back to the trophy stats</a> · <a href="follow.html">Follow a trophy draft</a></p>
   <h1>Cards trophy drafters took</h1>
-  <p class="sub">Every card picked in the Premier Draft trophy drafts we have pick data for, ranked by how many of those drafters took it.</p>
+  <p class="sub">Every card picked in the Premier Draft trophy drafts we have pick data for, ranked by how many of those drafters took it. Rarity is from <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a>.</p>
   <div class="note">
     <strong>Picked, not played.</strong> 17Lands only shares decklists with subscribers, so this counts the cards each trophy drafter <em>drafted</em>. Some will have sat in the sideboard.
     Rare cards show up less often simply because there are fewer of them, so look at <em>take rate</em> to see how highly drafters rated a card when they had the chance. The sample is small (<span id="n">–</span> drafts), so treat it as directional.
@@ -92,6 +106,13 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
       <button type="button" data-c="M" aria-pressed="false" title="Multicolour">Multi</button>
       <button type="button" data-c="C" aria-pressed="false" title="Colourless">C</button>
     </div>
+    <div class="seg" role="group" aria-label="Rarity" id="rarities">
+      <button type="button" data-r="" aria-pressed="true">Any rarity</button>
+      <button type="button" data-r="common" aria-pressed="false">Common</button>
+      <button type="button" data-r="uncommon" aria-pressed="false">Uncommon</button>
+      <button type="button" data-r="rare" aria-pressed="false">Rare</button>
+      <button type="button" data-r="mythic" aria-pressed="false">Mythic</button>
+    </div>
     <span class="meta" id="count"></span>
   </div>
 
@@ -101,13 +122,14 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
         <thead><tr>
           <th>Card</th>
           <th>Cost</th>
+          <th>Rarity</th>
           <th class="num" data-k="drafts" title="Trophy drafters who took at least one copy"><button type="button">Trophy drafts</button></th>
           <th class="num" data-k="copies" title="Total copies taken across trophy drafts"><button type="button">Copies</button></th>
           <th class="num" data-k="avgPick" title="Average pick within the pack when taken (1 = first pick)"><button type="button">Avg pick</button></th>
           <th class="num" data-k="seen" title="Times the card was in a pack a trophy drafter picked from"><button type="button">Seen</button></th>
           <th class="num" data-k="takeRate" title="Copies taken ÷ times seen"><button type="button">Take rate</button></th>
         </tr></thead>
-        <tbody id="rows"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
+        <tbody id="rows"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody>
       </table>
     </div>
   </section>
@@ -130,27 +152,48 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
   // ponytail: colour from mana cost only, so lands and colour-in-text-only cards count as colourless
   const colours = (cost) => [...new Set(symbols(cost).join("").match(/[WUBRG]/g) || [])];
 
+  const deckPips = (code) => '<span class="pips" aria-hidden="true">' + [...code].map((c) => {
+    const up = c.toUpperCase();
+    return '<span class="pip pip-' + up + (c !== up ? " lc" : "") + '">' + up + "</span>";
+  }).join("") + "</span>";
+
   const BASICS = new Set(["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"]);
-  let rows = [], sortKey = "drafts", sortDir = -1, colour = "", q = "";
+  let data, open = null, rows = [], sortKey = "drafts", sortDir = -1, colour = "", rarity = "", q = "";
 
   function build(data) {
-    const stats = data.cards.map((c) => ({ ...c, cols: colours(c.cost), drafts: 0, copies: 0, pickSum: 0, seen: 0 }));
-    for (const d of data.drafts) {
+    const stats = data.cards.map((c, i) => ({ ...c, idx: i, cols: colours(c.cost), drafts: 0, copies: 0, pickSum: 0, seen: 0, by: new Map() }));
+    data.drafts.forEach((d, k) => {
       const took = new Set();
       for (const p of d.picks) {
         for (const c of new Set(p.available)) stats[c].seen++;
         const s = stats[p.picked];
         s.copies++; s.pickSum += p.pick + 1; took.add(p.picked);
+        if (!s.by.has(k)) s.by.set(k, []);
+        s.by.get(k).push("P" + (p.pack + 1) + "p" + (p.pick + 1));
       }
       took.forEach((c) => stats[c].drafts++);
-    }
+    });
     // basics only get taken as last picks, so they would just be noise at the top
     return stats.filter((s) => s.copies && !BASICS.has(s.name)).map((s) => ({ ...s, avgPick: s.pickSum / s.copies, takeRate: s.copies / s.seen }));
   }
 
+  function detail(r) {
+    const items = [...r.by].map(([k, picks]) => {
+      const d = data.drafts[k];
+      return "<li>" + deckPips(d.colors) + " <strong>" + esc(d.record) + "</strong>" +
+        (d.start_rank ? ' <span class="muted">' + esc(d.start_rank) + "</span>" : "") +
+        "<span>Taken " + esc(picks.join(", ")) + "</span>" +
+        '<a href="follow.html?d=' + k + '">Follow this draft →</a></li>';
+    }).join("");
+    return '<tr><td colspan="8" class="detail"><div class="detail-body"><img src="' + esc(r.img) + '" alt="' + esc(r.name) + '">' +
+      "<div><h3>Trophy drafts that took it (" + r.drafts + ")</h3><ul>" + items + "</ul>" +
+      '<p class="muted" style="font-size:12px;margin:8px 0 0">Drafted, not necessarily played. 17Lands keeps decklists for subscribers.</p></div></div></td></tr>';
+  }
+
   function render() {
     const shown = rows.filter((r) => (!q || r.name.toLowerCase().includes(q)) &&
-      (!colour || (colour === "M" ? r.cols.length > 1 : colour === "C" ? !r.cols.length : r.cols.includes(colour))));
+      (!colour || (colour === "M" ? r.cols.length > 1 : colour === "C" ? !r.cols.length : r.cols.includes(colour))) &&
+      (!rarity || r.rarity === rarity));
     shown.sort((a, b) => (a[sortKey] - b[sortKey]) * sortDir || b.drafts - a.drafts || a.name.localeCompare(b.name));
     document.querySelectorAll("th[data-k]").forEach((th) => {
       if (th.dataset.k === sortKey) th.setAttribute("aria-sort", sortDir < 0 ? "descending" : "ascending");
@@ -158,14 +201,17 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
     });
     $("count").textContent = shown.length + " of " + rows.length + " cards";
     $("rows").innerHTML = shown.length ? shown.map((r) =>
-      '<tr><td><div class="name"><img src="' + esc(r.img) + '" alt="" loading="lazy" data-img="' + esc(r.img) + '"><span>' + esc(r.name) + "</span></div></td>" +
+      '<tr class="row' + (open === r.idx ? " open" : "") + '" data-i="' + r.idx + '"><td><div class="name"><img src="' + esc(r.img) + '" alt="" loading="lazy" data-img="' + esc(r.img) + '">' +
+      '<button type="button" aria-expanded="' + (open === r.idx) + '">' + esc(r.name) + "</button></div></td>" +
       "<td>" + costHtml(r.cost) + "</td>" +
+      '<td style="text-transform:capitalize">' + esc(r.rarity || "–") + "</td>" +
       '<td class="num">' + r.drafts + "</td>" +
       '<td class="num">' + r.copies + "</td>" +
       '<td class="num">' + r.avgPick.toFixed(1) + "</td>" +
       '<td class="num">' + r.seen + "</td>" +
-      '<td class="num">' + Math.round(r.takeRate * 100) + '%<span class="meter" aria-hidden="true"><i style="width:' + r.takeRate * 100 + '%"></i></span></td></tr>'
-    ).join("") : '<tr><td colspan="7" class="empty">No cards match.</td></tr>';
+      '<td class="num">' + Math.round(r.takeRate * 100) + '%<span class="meter" aria-hidden="true"><i style="width:' + r.takeRate * 100 + '%"></i></span></td></tr>' +
+      (open === r.idx ? detail(r) : "")
+    ).join("") : '<tr><td colspan="8" class="empty">No cards match.</td></tr>';
   }
 
   document.querySelectorAll("th[data-k] button").forEach((b) => b.addEventListener("click", () => {
@@ -175,19 +221,28 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
     sortKey = k;
     render();
   }));
+  $("rows").addEventListener("click", (e) => {
+    const tr = e.target.closest("tr.row");
+    if (!tr || e.target.closest("a")) return;
+    const i = +tr.dataset.i;
+    open = open === i ? null : i;
+    render();
+    const btn = $("rows").querySelector('tr[data-i="' + i + '"] button');
+    if (btn) btn.focus();
+  });
   $("q").addEventListener("input", (e) => { q = e.target.value.trim().toLowerCase(); render(); });
-  $("colours").addEventListener("click", (e) => {
+  for (const id of ["colours", "rarities"]) $(id).addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b) return;
-    colour = b.dataset.c;
-    document.querySelectorAll("#colours button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    if (id === "colours") colour = b.dataset.c; else rarity = b.dataset.r;
+    $(id).querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
     render();
   });
 
   const preview = $("preview");
   $("rows").addEventListener("mouseover", (e) => {
     const img = e.target.closest("tr") && e.target.closest("tr").querySelector("img[data-img]");
-    if (!img) return;
+    if (!img || e.target.closest("tr").classList.contains("open")) { preview.style.display = "none"; return; }
     preview.src = img.dataset.img; preview.style.display = "block";
   });
   $("rows").addEventListener("mousemove", (e) => {
@@ -198,10 +253,11 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
   $("rows").addEventListener("mouseleave", () => { preview.style.display = "none"; });
 
   fetch("data/drafts.json").then((r) => r.json()).then((d) => {
+    data = d;
     $("n").textContent = d.drafts.length;
     rows = build(d);
     render();
-  }).catch(() => { $("rows").innerHTML = '<tr><td colspan="7" class="empty">Could not load data/drafts.json.</td></tr>'; });
+  }).catch(() => { $("rows").innerHTML = '<tr><td colspan="8" class="empty">Could not load data/drafts.json.</td></tr>'; });
 })();
 </script>
 </body>

@@ -207,7 +207,8 @@ footer { margin-top: 28px; color: var(--text-muted); font-size: 12px; }
     if (!data.drafts.length) { $("where").textContent = "No trophy drafts with pick data yet."; return; }
     $("draft").innerHTML = data.drafts.map((x, k) =>
       '<option value="' + k + '">Trophy draft ' + (k + 1) + " · " + esc(x.record) + (x.start_rank ? " · " + esc(x.start_rank) : "") + "</option>").join("");
-    start(Math.floor(Math.random() * data.drafts.length));
+    const asked = parseInt(new URLSearchParams(location.search).get("d"), 10);
+    start(asked >= 0 && asked < data.drafts.length ? asked : Math.floor(Math.random() * data.drafts.length));
   }).catch(() => { $("where").textContent = "Could not load data/drafts.json."; });
 })();
 </script>
